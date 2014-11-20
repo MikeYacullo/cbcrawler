@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+	<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+	<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+	<ProductVersion>10.0.20506</ProductVersion>
+	<SchemaVersion>2.0</SchemaVersion>
+	<ProjectGuid>{9299A110-F35B-5D97-C1A1-0D83F3DB912B}</ProjectGuid>
+	<OutputType>Library</OutputType>
+	<AppDesignerFolder>Properties</AppDesignerFolder>
+	<RootNamespace></RootNamespace>
+	<AssemblyName>Assembly-CSharp</AssemblyName>
+	<TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+	<FileAlignment>512</FileAlignment>
+	<BaseDirectory>Assets</BaseDirectory>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+	<DebugSymbols>true</DebugSymbols>
+	<DebugType>full</DebugType>
+	<Optimize>false</Optimize>
+	<OutputPath>Temp\bin\Debug\</OutputPath>
+	<DefineConstants>DEBUG;TRACE;UNITY_4_6_0;UNITY_4_6;UNITY_WEBPLAYER;WEBPLUG;ENABLE_MICROPHONE;ENABLE_TEXTUREID_MAP;ENABLE_UNITYEVENTS;ENABLE_NEW_HIERARCHY ;ENABLE_AUDIO_FMOD;ENABLE_MONO;ENABLE_TERRAIN;ENABLE_SUBSTANCE;ENABLE_GENERICS;INCLUDE_WP8SUPPORT;ENABLE_MOVIES;ENABLE_WWW;ENABLE_IMAGEEFFECTS;ENABLE_4_6_FEATURES;INCLUDE_WP_BLUE_SUPPORT;ENABLE_WEBCAM;INCLUDE_METROSUPPORT;RENDER_SOFTWARE_CURSOR;ENABLE_NETWORK;ENABLE_PHYSICS;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_2D_PHYSICS;ENABLE_SHADOWS;ENABLE_AUDIO;ENABLE_NAVMESH_CARVING;ENABLE_DUCK_TYPING;ENABLE_SINGLE_INSTANCE_BUILD_SETTING;ENABLE_PROFILER;UNITY_EDITOR;UNITY_EDITOR_OSX</DefineConstants>
+	<ErrorReport>prompt</ErrorReport>
+	<WarningLevel>4</WarningLevel>
+	<NoWarn>0169</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+	<DebugType>pdbonly</DebugType>
+	<Optimize>true</Optimize>
+	<OutputPath>Temp\bin\Release\</OutputPath>
+	<DefineConstants>TRACE</DefineConstants>
+	<ErrorReport>prompt</ErrorReport>
+	<WarningLevel>4</WarningLevel>
+	<NoWarn>0169</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+	<Reference Include="System" />
+    <Reference Include="System.XML" />
+	<Reference Include="System.Core" />
+	<Reference Include="System.Xml.Linq" />
+	<Reference Include="UnityEngine">
+	  <HintPath>/Applications/Unity/Unity.app/Contents/Frameworks/Managed/UnityEngine.dll</HintPath>
+	</Reference>
+	<Reference Include="UnityEditor">
+	  <HintPath>/Applications/Unity/Unity.app/Contents/Frameworks/Managed/UnityEditor.dll</HintPath>
+	</Reference>
+  </ItemGroup>
+  <ItemGroup>
+     <Compile Include="Assets\Imports\Pro-D\Scripts\Building Blocks\Address.cs" />
+     <Compile Include="Assets\Imports\Pro-D\Scripts\Building Blocks\Cell.cs" />
+     <Compile Include="Assets\Imports\Pro-D\Scripts\Building Blocks\DirectionManager.cs" />
+     <Compile Include="Assets\Imports\Pro-D\Scripts\Building Blocks\Map.cs" />
+     <Compile Include="Assets\Imports\Pro-D\Scripts\Building Blocks\Room.cs" />
+     <Compile Include="Assets\Imports\Pro-D\Scripts\Building Blocks\WorldMap.cs" />
+     <Compile Include="Assets\Imports\Pro-D\Scripts\Camera\CameraDragAndZoom.cs" />
+     <Compile Include="Assets\Imports\Pro-D\Scripts\Camera\CameraMixed.cs" />
+     <Compile Include="Assets\Imports\Pro-D\Scripts\Camera\CameraObjectTracker.cs" />
+     <Compile Include="Assets\Imports\Pro-D\Scripts\Extras\DestroyOnLoad.cs" />
+     <Compile Include="Assets\Imports\Pro-D\Scripts\Extras\ExampleSceneGUI.cs" />
+     <Compile Include="Assets\Imports\Pro-D\Scripts\Managers and Tools\FilePorter.cs" />
+     <Compile Include="Assets\Imports\Pro-D\Scripts\Managers and Tools\FogOfWar.cs" />
+     <Compile Include="Assets\Imports\Pro-D\Scripts\Managers and Tools\InputManager.cs" />
+     <Compile Include="Assets\Imports\Pro-D\Scripts\Managers and Tools\Materializer.cs" />
+     <Compile Include="Assets\Imports\Pro-D\Scripts\Managers and Tools\MethodLibrary.cs" />
+     <Compile Include="Assets\Imports\Pro-D\Scripts\Managers and Tools\PathFinding.cs" />
+     <Compile Include="Assets\Imports\Pro-D\Scripts\Managers and Tools\ProDManager.cs" />
+     <Compile Include="Assets\Imports\Pro-D\Scripts\Managers and Tools\RandomSprite.cs" />
+     <Compile Include="Assets\Imports\Pro-D\Scripts\Managers and Tools\RandomTexture.cs" />
+     <Compile Include="Assets\Imports\Pro-D\Scripts\Managers and Tools\TextureManager.cs" />
+     <Compile Include="Assets\Imports\Pro-D\Scripts\Map Generators\Generator_AlternativeDungeon.cs" />
+     <Compile Include="Assets\Imports\Pro-D\Scripts\Map Generators\Generator_Cavern.cs" />
+     <Compile Include="Assets\Imports\Pro-D\Scripts\Map Generators\Generator_Dungeon.cs" />
+     <Compile Include="Assets\Imports\Pro-D\Scripts\Map Generators\Generator_DungeonRuins.cs" />
+     <Compile Include="Assets\Imports\Pro-D\Scripts\Map Generators\Generator_DwarfTown.cs" />
+     <Compile Include="Assets\Imports\Pro-D\Scripts\Map Generators\Generator_EmptyMap.cs" />
+     <Compile Include="Assets\Imports\Pro-D\Scripts\Map Generators\Generator_Maze.cs" />
+     <Compile Include="Assets\Imports\Pro-D\Scripts\Map Generators\Generator_ObstacleBiome.cs" />
+     <Compile Include="Assets\Imports\Pro-D\Scripts\Map Generators\Generator_PerlinLikebiome.cs" />
+     <Compile Include="Assets\Imports\Pro-D\Scripts\Map Generators\Generator_RockyHill.cs" />
+     <Compile Include="Assets\Imports\Pro-D\Scripts\Map Generators\Generator_RoundRooms.cs" />
+     <Compile Include="Assets\Imports\Pro-D\Scripts\Map Generators\Generator_StickBiome.cs" />
+     <Compile Include="Assets\Imports\Pro-D\Scripts\Map Generators\Generator_StickDungeon.cs" />
+     <Compile Include="Assets\Imports\Pro-D\Scripts\Movement and AI\AI_Goblin.cs" />
+     <Compile Include="Assets\Imports\Pro-D\Scripts\Movement and AI\FlyMode.cs" />
+     <Compile Include="Assets\Imports\Pro-D\Scripts\Movement and AI\MovingObject.cs" />
+     <Compile Include="Assets\Imports\Pro-D\Scripts\Movement and AI\PathFindingAlgorithm.cs" />
+     <Compile Include="Assets\Imports\Pro-D\Scripts\Movement and AI\PlayerMovement.cs" />
+     <Compile Include="Assets\Imports\Pro-D\Scripts\Movement and AI\SpawnOnlyPlayerMovement.cs" />
+     <Compile Include="Assets\Imports\Pro-D\Scripts\Movement and AI\TurnBasedActor.cs" />
+     <Compile Include="Assets\Imports\Pro-D\Scripts\Movement and AI\TurnBasedPlayerMovement.cs" />
+     <Compile Include="Assets\Imports\Pro-D\Scripts\Movement and AI\TurnManager.cs" />
+     <Compile Include="Assets\Imports\Pro-D\Scripts\Structural\Heap.cs" />
+     <Compile Include="Assets\Imports\Pro-D\Scripts\Structural\Singleton.cs" />
+     <Compile Include="Assets\Imports\Pro-D\Scripts\WorldMap Generators\Generator_Generic_World.cs" />
+     <Compile Include="Assets\Imports\Pro-D\Scripts\WorldMap Generators\Generator_Variable_World.cs" />
+     <Compile Include="Assets\Scripts\Actor.cs" />
+     <Compile Include="Assets\Scripts\Address.cs" />
+     <Compile Include="Assets\Scripts\BackpackSlotController.cs" />
+     <Compile Include="Assets\Scripts\Enemy.cs" />
+     <Compile Include="Assets\Scripts\Enemy_Bat.cs" />
+     <Compile Include="Assets\Scripts\Enemy_GreenSlime.cs" />
+     <Compile Include="Assets\Scripts\Enemy_Spider.cs" />
+     <Compile Include="Assets\Scripts\Factory.cs" />
+     <Compile Include="Assets\Scripts\GameController.cs" />
+     <Compile Include="Assets\Scripts\Globals.cs" />
+     <Compile Include="Assets\Scripts\InventoryController.cs" />
+     <Compile Include="Assets\Scripts\Item.cs" />
+     <Compile Include="Assets\Scripts\Map.cs" />
+     <Compile Include="Assets\Scripts\Mutator.cs" />
+     <Compile Include="Assets\Scripts\PlayerCharacter.cs" />
+     <Compile Include="Assets\Scripts\Stats.cs" />
+     <Compile Include="Assets\Scripts\TitleScreenController.cs" />
+     <None Include="Assets\Imports\Pro-D\Pro-D Logo\Pro-D Logo Text.txt" />
+ <Reference Include="Assembly-UnityScript-firstpass">
+ <HintPath>/Users/Mike/Dropbox/Unity/Projects/cbcrawler/Library/ScriptAssemblies/Assembly-UnityScript-firstpass.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.UI">
+ <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/GUISystem/4.6.0/UnityEngine.UI.dll</HintPath>
+ </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="Assembly-CSharp-firstpass-vs.csproj">
+      <Project>{21AD3E84-1120-A8C8-FF7A-659DEBE78A42}</Project>      <Name>Assembly-CSharp-firstpass-vs</Name>    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+	   Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  
+</Project>

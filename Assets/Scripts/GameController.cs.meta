@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: a4b0cf53b78de4939a518d87a74936c4
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - tileMapTerrain: {instanceID: 0}
+  - spriteHeartFull: {fileID: 21300000, guid: 078378e6a85c74927a77cbc093a2f2dd, type: 3}
+  - spriteHeartHalf: {fileID: 21300000, guid: 2d201317da5134ffabdb3d4d0ecd8447, type: 3}
+  - spriteHeartEmpty: {fileID: 21300000, guid: 49374650cd4de41479ad23d82b145a7c, type: 3}
+  - audioStep: {fileID: 8300000, guid: 1044421261ca14716818c01f66690e2e, type: 3}
+  - audioDoor: {instanceID: 0}
+  - audioHitEnemy: {instanceID: 0}
+  - audioWhiff: {instanceID: 0}
+  - audioDieEnemy: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
