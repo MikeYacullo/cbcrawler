@@ -81,6 +81,7 @@ public class GameController : MonoBehaviour
 	private List<Type>[] levelEnemyTypes;
 	
 	private List<Item> items = new List<Item> ();
+	private List<GameObject> itemSprites = new List<GameObject> ();
 	private List<Item>[] levelItems;
 	private List<Type>[] levelItemTypes;
 	
@@ -158,10 +159,12 @@ public class GameController : MonoBehaviour
 	{
 		texturesPC = Resources.LoadAll<Sprite> ("Textures/Player");
 		texturesNPC = Resources.LoadAll<Sprite> ("Textures/NPC");
+		texturesItem = Resources.LoadAll<Sprite> ("Textures/Item");
 	}
 	
 	Sprite FindSpriteInTextures (string spriteName, Sprite[] textures)
 	{
+		Debug.Log ("? " + spriteName);
 		string[] names = new string[textures.Length];
 		for (int i=0; i<names.Length; i++) {
 			if (textures [i].name == spriteName) {
@@ -175,7 +178,7 @@ public class GameController : MonoBehaviour
 	private void MoveToLevel (int level)
 	{
 		gameState = GameState.LevelTransition;
-		txtTransition.text = "Level " + level.ToString ();
+		txtTransition.text = "Level " + (level + 1).ToString ();
 		pnlTransition.SetActive (true);
 		StartCoroutine (WaitAndMove (level));
 	}
@@ -199,6 +202,9 @@ public class GameController : MonoBehaviour
 	{
 		if (currentLevel != -1) {
 			levelEnemies [currentLevel] = enemies;
+			DestroyEnemySprites ();
+			levelItems [currentLevel] = items;
+			DestroyItemSprites ();
 		}
 	}
 	
@@ -206,49 +212,57 @@ public class GameController : MonoBehaviour
 	{
 		if (levelItems [currentLevel] != null) {
 			items = levelItems [currentLevel];
+			MakeItemSprites ();
 		} else {
 			for (int i=0; i<ITEMS_PER_LEVEL_COUNT; i++) {
 				//pick an item from the list
 				Item item = Factory.GetItemForLevel (currentLevel);
 				item.Location = map.GetRandomCell (true);
-				items.Add (item);
+				AddItem (item);
 			}
 		}
-		RenderItems ();
+		
 	}
 
-	
-	private void RenderItems ()
-	{/*
-		//clear the whole thing
-		for (int w=0; w<mapWidth; w++) {
-			for (int h=0; h<mapHeight; h++) {
-				if (map.Cells [w, h].Visited) {
-					tileMapItems [w, h] = 0;
-					//tileMapItems.ClearTile (w, h, 0);
-				}
-			}
-		}
-		//draw items
+	void MakeItemSprites ()
+	{
 		for (int i=0; i<items.Count; i++) {
-			if (map.Cells [items [i].Location.x, items [i].Location.y].Visited) {
-				//TODO optimize this!
-				int spriteId = tileMapItems.TileSheet.Lookup (items [i].SpriteName);
-				tileMapItems [items [i].Location.x, items [i].Location.y] = spriteId;
-				//int spriteId = tileMapItems.TileSheet.Lookup (items [i].SpriteName);
-				//tileMapItems.SetTile (items [i].Location.x, items [i].Location.y, 0, spriteId);
-			}
+			AddItemSprite (items [i]);
 		}
-		//tileMapItems.Build ();
-		*/
+	}
+	
+	void AddItem (Item item)
+	{
+		items.Add (item);
+		AddItemSprite (item);
+	}
+	
+	void AddItemSprite (Item item)
+	{
+		GameObject sprite = new GameObject ();
+		SpriteRenderer sr = sprite.AddComponent<SpriteRenderer> ();
+		sr.sprite = FindSpriteInTextures (item.SpriteName, texturesItem);
+		MoveSpriteTo (sprite, item.Location.x, item.Location.y);
+		itemSprites.Add (sprite);
+	}
+	
+	void RemoveItem (int itemIndex)
+	{
+		items.RemoveAt (itemIndex);
+		GameObject.Destroy (itemSprites [itemIndex]);
+		itemSprites.RemoveAt (itemIndex);
+	}
+	
+	void DestroyItemSprites ()
+	{
+		while (itemSprites.Count>0) {
+			GameObject.Destroy (itemSprites [0]);
+			itemSprites.RemoveAt (0);	
+		}
 	}
 
 	void InitMap ()
 	{
-		/*
-		if (previousLevel != -1) {
-			levels [previousLevel] = map;
-		}*/
 		map = levels [currentLevel];
 		RenderMap ();
 	}
@@ -310,15 +324,36 @@ public class GameController : MonoBehaviour
 					enemy.Loot = Factory.GetItemForLevel (currentLevel);
 				}
 				enemies.Add (enemy);
-				GameObject enemySprite = new GameObject ();
-				SpriteRenderer sr = enemySprite.AddComponent<SpriteRenderer> ();
-				sr.sprite = FindSpriteInTextures (enemy.SpriteName, texturesNPC);
-				MoveSpriteTo (enemySprite, enemy.Location.x, enemy.Location.y);
-				enemySprites.Add (enemySprite);
 			}
 		}
-		RenderTMCharacters ();
+		MakeEnemySprites ();
 	}	
+	
+	void MakeEnemySprites ()
+	{
+		for (int i=0; i<enemies.Count; i++) {
+			GameObject enemySprite = new GameObject ();
+			SpriteRenderer sr = enemySprite.AddComponent<SpriteRenderer> ();
+			sr.sprite = FindSpriteInTextures (enemies [i].SpriteName, texturesNPC);
+			MoveSpriteTo (enemySprite, enemies [i].Location.x, enemies [i].Location.y);
+			enemySprites.Add (enemySprite);	
+		}
+	}
+	
+	void RemoveEnemy (int enemyIndex)
+	{
+		enemies.RemoveAt (enemyIndex);	
+		GameObject.Destroy (enemySprites [enemyIndex]);
+		enemySprites.RemoveAt (enemyIndex);	
+	}
+	
+	void DestroyEnemySprites ()
+	{
+		while (enemySprites.Count>0) {
+			GameObject.Destroy (enemySprites [0]);
+			enemySprites.RemoveAt (0);	
+		}
+	}
 	
 	void MoveSpriteTo (GameObject sprite, int gridX, int gridY)
 	{
@@ -483,8 +518,6 @@ public class GameController : MonoBehaviour
 		} else {
 			spritePC.transform.localScale = new Vector3 (1, 1, 1);
 		}
-		
-		RenderItems ();
 		camera.transform.position = new Vector3 (pcLoc.center.x, pcLoc.center.y, -10);
 	}
 	
@@ -500,48 +533,34 @@ public class GameController : MonoBehaviour
 				MoveSpriteTo (enemySprites [i], enemies [i].Location.x, enemies [i].Location.y);
 			}
 		}
-		RenderTMCharacters ();
-		RenderItems ();
 		UpdateHud ();
 		gameState = GameState.TurnPlayer;
 	}
-	
-
-	private void RenderTMCharacters ()
-	{
-		/*
-		//clear the whole thing
-		for (int w=0; w<mapWidth; w++) {
-			for (int h=0; h<mapHeight; h++) {
-				if (map.Cells [w, h].Visited) {
-					tileMapCharacters.PaintTile (w, h, COLOR_NOTHING);
-				}
-			}
-		}
-		//draw pc
-		tileMapCharacters [pc.Location.x, pc.Location.y] = pcSpriteId;
-		if (pcIsFlipped) {
-			//tileMapCharacters.SetTileFlags (pc.Location.x, pc.Location.y, 0, tk2dTileFlags.FlipX);
-		}
-		//draw enemies
-		for (int i=0; i<enemies.Count; i++) {
-			if (map.Cells [enemies [i].Location.x, enemies [i].Location.y].Visited) {
-				//TODO optimize this!
-				int spriteId = tileMapCharacters.TileSheet.Lookup (enemies [i].SpriteName);
-				tileMapCharacters [enemies [i].Location.x, enemies [i].Location.y] = spriteId;
-			}
-		}
-		*/
-	}
-
-	
+		
 	private void CheckInput ()
 	{
-		if (Input.GetKeyDown (KeyCode.LeftBracket) && camera.orthographicSize >= 0.0) {
-			camera.orthographicSize -= 0.5f; 
+		
+		#region CHEATS		
+		bool cheats = true;
+		if (cheats) {
+		
+			if (Input.GetKeyDown (KeyCode.X)) {
+				MovePlayerTo (map.exitLocation);
+			}
+			
+			if (Input.GetKeyDown (KeyCode.N)) {
+				MovePlayerTo (map.entranceLocation);
+			}
+		
 		}
-		if (Input.GetKeyDown (KeyCode.RightBracket) && camera.orthographicSize <= 15.0) {
-			camera.orthographicSize += 0.5f;
+	
+		#endregion
+		
+		if (Input.GetKeyDown (KeyCode.RightBracket) && camera.orthographicSize >= 0.0) {
+			camera.orthographicSize -= 1.0f; 
+		}
+		if (Input.GetKeyDown (KeyCode.LeftBracket) && camera.orthographicSize <= 15.0) {
+			camera.orthographicSize += 1.0f;
 		}
 		
 		if (Input.GetKeyDown (KeyCode.I)) {
@@ -597,14 +616,12 @@ public class GameController : MonoBehaviour
 						Item loot = enemies [enemyIndex].Loot;
 						if (loot != null) {
 							loot.Location = new Address (enemies [enemyIndex].Location.x, enemies [enemyIndex].Location.y);
-							items.Add (loot);
+							AddItem (loot);
 							DisplayMessage (enemies [enemyIndex].Name + " drops " + loot.Name);
 						}
 						//remove enemy
 						map.Cells [enemies [enemyIndex].Location.x, enemies [enemyIndex].Location.y].Passable = true;
-						enemies.RemoveAt (enemyIndex);	
-						GameObject.Destroy (enemySprites [enemyIndex]);
-						enemySprites.RemoveAt (enemyIndex);			
+						RemoveEnemy (enemyIndex);	
 					}
 				}
 			}
@@ -619,7 +636,7 @@ public class GameController : MonoBehaviour
 		int itemIndex = ItemAt (new Address (location.x, location.y));
 		if (itemIndex != -1) {
 			if (pc.AddToInventory (items [itemIndex])) {
-				items.RemoveAt (itemIndex);
+				RemoveItem (itemIndex);
 				audio.PlayOneShot (audioLoot, VOLUME);
 				DisplayMessage ("Picked up " + pc.Inventory [pc.Inventory.Count - 1].Name);
 			}

@@ -17,7 +17,7 @@ public class BackpackSlotController : MonoBehaviour
 	void Start ()
 	{
 		itemImage = gameObject.transform.GetChild (0).GetComponent<Image> ();
-		textures = Resources.LoadAll<Sprite> ("Textures/Items");
+		textures = Resources.LoadAll<Sprite> ("Textures/Item");
 		names = new string[textures.Length];
 		
 		for (int ii=0; ii< names.Length; ii++) {

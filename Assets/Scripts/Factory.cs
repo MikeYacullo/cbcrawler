@@ -96,7 +96,7 @@ public static class Factory
 	public static Item NewPotion (int level)
 	{
 		Item item = new ItemConsumable ();
-		item.SpriteName = "potionRed_s";
+		item.SpriteName = "potionred_s";
 		item.Name = "Small Red Potion";
 		return item;
 	}
