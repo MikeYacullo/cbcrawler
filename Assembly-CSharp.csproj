@@ -97,9 +97,6 @@
      <Compile Include="Assets\Scripts\Address.cs" />
      <Compile Include="Assets\Scripts\BackpackSlotController.cs" />
      <Compile Include="Assets\Scripts\Enemy.cs" />
-     <Compile Include="Assets\Scripts\Enemy_Bat.cs" />
-     <Compile Include="Assets\Scripts\Enemy_GreenSlime.cs" />
-     <Compile Include="Assets\Scripts\Enemy_Spider.cs" />
      <Compile Include="Assets\Scripts\Factory.cs" />
      <Compile Include="Assets\Scripts\GameController.cs" />
      <Compile Include="Assets\Scripts\Globals.cs" />

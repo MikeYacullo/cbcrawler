@@ -159,7 +159,7 @@ public static class Factory
 	{
 		Enemy enemy = new Enemy ();
 		enemy.Name = "Bat";
-		enemy.SpriteName = "enemy_bat";
+		enemy.SpriteName = "bat";
 		enemy.Stats.MaxHealth = 5;
 		enemy.Stats.CurrentHealth = enemy.Stats.MaxHealth;
 		enemy.Stats.AttackPower = 1;
@@ -172,7 +172,7 @@ public static class Factory
 	{
 		Enemy enemy = new Enemy ();
 		enemy.Name = "Green Slime";
-		enemy.SpriteName = "enemy_greenslime";
+		enemy.SpriteName = "greenslime";
 		enemy.Stats.MaxHealth = 5;
 		enemy.Stats.CurrentHealth = enemy.Stats.MaxHealth;
 		enemy.Stats.AttackPower = 1;
@@ -185,7 +185,7 @@ public static class Factory
 	{
 		Enemy enemy = new Enemy ();
 		enemy.Name = "Spider";
-		enemy.SpriteName = "enemy_spider";
+		enemy.SpriteName = "spider";
 		enemy.Stats.MaxHealth = 5;
 		enemy.Stats.CurrentHealth = enemy.Stats.MaxHealth;
 		enemy.Stats.AttackPower = 1;

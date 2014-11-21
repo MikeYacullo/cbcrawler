@@ -12,7 +12,8 @@ public class GameController : MonoBehaviour
 
 	private GameObject spritePC;
 	private Sprite[] texturesPC;
-	private Sprite[] texturesItems;
+	private Sprite[] texturesNPC;
+	private Sprite[] texturesItem;
 	
 	private Camera camera;
 
@@ -75,6 +76,7 @@ public class GameController : MonoBehaviour
 	public AudioClip audioLoot;
 	
 	private List<Enemy> enemies = new List<Enemy> ();
+	private List<GameObject> enemySprites = new List<GameObject> ();
 	private List<Enemy>[] levelEnemies;
 	private List<Type>[] levelEnemyTypes;
 	
@@ -108,7 +110,6 @@ public class GameController : MonoBehaviour
 	
 	void NewGame ()
 	{
-		Debug.Log ("new game!");
 		gameState = GameState.Initializing;
 		camera = GameObject.Find ("Camera").GetComponent<Camera> ();
 		
@@ -156,15 +157,14 @@ public class GameController : MonoBehaviour
 	void InitTextures ()
 	{
 		texturesPC = Resources.LoadAll<Sprite> ("Textures/Player");
+		texturesNPC = Resources.LoadAll<Sprite> ("Textures/NPC");
 	}
 	
 	Sprite FindSpriteInTextures (string spriteName, Sprite[] textures)
 	{
 		string[] names = new string[textures.Length];
-		Debug.Log (textures.Length + "sprites");
 		for (int i=0; i<names.Length; i++) {
 			if (textures [i].name == spriteName) {
-				Debug.Log (textures [i].name + "found");
 				return textures [i];
 				break;
 			} 
@@ -193,7 +193,6 @@ public class GameController : MonoBehaviour
 		UpdateHud ();
 		pnlTransition.SetActive (false);
 		gameState = GameState.TurnPlayer;
-		//Debug.Log ("init level " + currentLevel + " complete");
 	}
 
 	private void SaveLevelState ()
@@ -283,7 +282,6 @@ public class GameController : MonoBehaviour
 		}
 		pc = new PlayerCharacter (classType, isMale);
 		InitCharacterSprite ();
-		//Debug.Log (pc.classType.ToString ());
 	}
 	
 	void InitPlayerCharacter ()
@@ -291,7 +289,6 @@ public class GameController : MonoBehaviour
 		if (currentLevel > previousLevel) {
 			//coming down stairs
 			MovePlayerTo (map.entranceLocation);
-			Debug.Log ("moving to entrance");
 		} else {
 			//going up stairs
 			MovePlayerTo (map.exitLocation);
@@ -313,10 +310,21 @@ public class GameController : MonoBehaviour
 					enemy.Loot = Factory.GetItemForLevel (currentLevel);
 				}
 				enemies.Add (enemy);
+				GameObject enemySprite = new GameObject ();
+				SpriteRenderer sr = enemySprite.AddComponent<SpriteRenderer> ();
+				sr.sprite = FindSpriteInTextures (enemy.SpriteName, texturesNPC);
+				MoveSpriteTo (enemySprite, enemy.Location.x, enemy.Location.y);
+				enemySprites.Add (enemySprite);
 			}
 		}
 		RenderTMCharacters ();
 	}	
+	
+	void MoveSpriteTo (GameObject sprite, int gridX, int gridY)
+	{
+		Rect rect = tileMapTerrain.GetTileBoundsLocal (gridX, gridY);
+		sprite.transform.position = new Vector3 (rect.center.x, rect.center.y, 0);
+	}
 	
 	void InitCharacterSprite ()
 	{
@@ -342,7 +350,6 @@ public class GameController : MonoBehaviour
 			break;		
 		}
 		string spriteName = className + sex;
-		Debug.Log ("player sprite:" + spriteName);
 		
 		spritePC = GameObject.Find ("SpritePC");
 		spritePC.GetComponent<SpriteRenderer> ().sprite = FindSpriteInTextures (spriteName, texturesPC);
@@ -350,10 +357,6 @@ public class GameController : MonoBehaviour
 	
 	void RenderMap ()
 	{
-		//tileMapTerrain = GameObject.Find ("TileMapTerrain").GetComponent<TileMapBehaviour> ();
-		if (tileMapTerrain == null) {
-			Debug.Log ("can't find terrain");
-		}
 		//init "constants"
 		TILE_DOORCLOSED = tileMapTerrain.TileSheet.Lookup ("doorClosed_" + mapSpriteVariations [currentLevel]);
 		TILE_DOOROPEN = tileMapTerrain.TileSheet.Lookup ("doorOpen_" + mapSpriteVariations [currentLevel]);
@@ -399,7 +402,6 @@ public class GameController : MonoBehaviour
 					break;
 				default:
 					tileMapTerrain [w, h] = TILE_SOLIDBLACK;
-					//Debug.Log ("Can't find cell type " + map.Cells [w, h].Type.ToString ());
 					break;
 				}
 			}
@@ -432,7 +434,6 @@ public class GameController : MonoBehaviour
 	{
 		//update hearts
 		float healthFraction = ((float)pc.Stats.CurrentHealth / (float)pc.Stats.MaxHealth);
-		//Debug.Log ("Health:" + healthFraction);
 		if (healthFraction <= 0) {
 			health4.sprite = spriteHeartEmpty;
 		}
@@ -473,24 +474,21 @@ public class GameController : MonoBehaviour
 	
 	private void TakePlayerTurn ()
 	{
-		
-		//clear current pc cell
-		//tileMapCharacters.ClearTile (pc.Location.x, pc.Location.y, 0);
 		CheckInput ();
 		//draw the character at its location
 		Rect pcLoc = tileMapTerrain.GetTileBoundsLocal (pc.Location.x, pc.Location.y);
 		spritePC.transform.position = new Vector3 (pcLoc.center.x, pcLoc.center.y, 0);
-		//tileMapCharacters [pc.Location.x, pc.Location.y] = pcSpriteId;
-		//if (pcIsFlipped) {
-		//	tileMapCharacters.SetTileFlags (pc.Location.x, pc.Location.y, 0, tk2dTileFlags.FlipX);
-		//}
-		//tileMapCharacters.Build ();
+		if (pcIsFlipped) {
+			spritePC.transform.localScale = new Vector3 (-1, 1, 1);
+		} else {
+			spritePC.transform.localScale = new Vector3 (1, 1, 1);
+		}
+		
 		RenderItems ();
-		
-		//camera.transform.position = new Vector3 (pc.Location.x * cameraScaleFactor, pc.Location.y * cameraScaleFactor, -10);	
-		
 		camera.transform.position = new Vector3 (pcLoc.center.x, pcLoc.center.y, -10);
 	}
+	
+
 	
 	private void TakeEnemyTurn ()
 	{
@@ -499,6 +497,7 @@ public class GameController : MonoBehaviour
 				CombatCheck (enemies [i], pc);
 			} else {
 				enemies [i].Move (map);
+				MoveSpriteTo (enemySprites [i], enemies [i].Location.x, enemies [i].Location.y);
 			}
 		}
 		RenderTMCharacters ();
@@ -603,7 +602,9 @@ public class GameController : MonoBehaviour
 						}
 						//remove enemy
 						map.Cells [enemies [enemyIndex].Location.x, enemies [enemyIndex].Location.y].Passable = true;
-						enemies.RemoveAt (enemyIndex);						
+						enemies.RemoveAt (enemyIndex);	
+						GameObject.Destroy (enemySprites [enemyIndex]);
+						enemySprites.RemoveAt (enemyIndex);			
 					}
 				}
 			}
@@ -662,7 +663,6 @@ public class GameController : MonoBehaviour
 	
 	private void CombatCheck (Actor attacker, Actor defender)
 	{
-		//Debug.Log ("combat check!");
 		//TODO make actual combat system
 		DisplayMessage (attacker.Name + " attacks " + defender.Name + "...");
 		if (UnityEngine.Random.Range (1, 10) > 4) {
