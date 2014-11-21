@@ -8,8 +8,11 @@ public class GameController : MonoBehaviour
 {
 
 	public TileMapBehaviour tileMapTerrain;
-	public TileMapBehaviour tileMapPlayers;
 	public TileMapBehaviour tileMapItems;
+
+	private GameObject spritePC;
+	private Sprite[] texturesPC;
+	private Sprite[] texturesItems;
 	
 	private Camera camera;
 
@@ -86,7 +89,7 @@ public class GameController : MonoBehaviour
 	//tilemap constants
 	Color COLOR_NOTHING = new Color (0, 0, 0, 0);
 	int[] mapSpriteVariations;
-	int SPRITE_VARIATIONS_COUNT = 2;
+	int SPRITE_VARIATIONS_COUNT = 3;
 	int SPRITE_WIDTH = 24;
 	int LAYER_FLOOR_AND_WALLS = 0;
 	int LAYER_DOORS_AND_STAIRS = 1;
@@ -112,13 +115,11 @@ public class GameController : MonoBehaviour
 		VOLUME = float.Parse (PlayerPrefs.GetString ("soundLevel"));
 		
 		tileMapTerrain = (TileMapBehaviour)GameObject.Find ("TileMapTerrain").GetComponent<TileMapBehaviour> ();
-		tileMapCharacters = (TileMapBehaviour)GameObject.Find ("TileMapCharacters").GetComponent<TileMapBehaviour> ();
-		tileMapItems = (TileMapBehaviour)GameObject.Find ("TileMapItems").GetComponent<TileMapBehaviour> ();
 		txtMessages = GameObject.Find ("txtMessages").GetComponent<UnityEngine.UI.Text> ();
 		
 		var settings = new TileMeshSettings (mapWidth, mapHeight, SPRITE_WIDTH);
-		tileMapCharacters.MeshSettings = settings;
-		tileMapItems.MeshSettings = settings;
+		//tileMapCharacters.MeshSettings = settings;
+		//tileMapItems.MeshSettings = settings;
 		tileMapTerrain.MeshSettings = settings;
 		
 		pnlTransition = GameObject.Find ("pnlTransition");
@@ -134,12 +135,13 @@ public class GameController : MonoBehaviour
 		health4 = GameObject.Find ("health4").GetComponent<UnityEngine.UI.Image> ();
 		levels = new Map[LEVEL_COUNT];
 		
+		InitTextures ();
+		
 		mapSpriteVariations = new int[LEVEL_COUNT];
 		for (int i=0; i<LEVEL_COUNT; i++) {
 			levels [i] = new Map (mapWidth, mapHeight);
 			mapSpriteVariations [i] = UnityEngine.Random.Range (0, SPRITE_VARIATIONS_COUNT);
 		}
-		
 		
 		levelEnemies = new List<Enemy>[LEVEL_COUNT];
 
@@ -149,6 +151,25 @@ public class GameController : MonoBehaviour
 		CreatePlayerCharacter ();
 		currentLevel = -1;
 		MoveToLevel (0);
+	}
+	
+	void InitTextures ()
+	{
+		texturesPC = Resources.LoadAll<Sprite> ("Textures/Player");
+	}
+	
+	Sprite FindSpriteInTextures (string spriteName, Sprite[] textures)
+	{
+		string[] names = new string[textures.Length];
+		Debug.Log (textures.Length + "sprites");
+		for (int i=0; i<names.Length; i++) {
+			if (textures [i].name == spriteName) {
+				Debug.Log (textures [i].name + "found");
+				return textures [i];
+				break;
+			} 
+		}
+		return null;
 	}
 	
 	private void MoveToLevel (int level)
@@ -305,21 +326,26 @@ public class GameController : MonoBehaviour
 		} else {
 			sex = "_f";
 		}
+		string className = "";
 		switch (pc.classType) {
 		case PlayerCharacter.ClassType.Cleric:
-			pcSpriteId = tileMapCharacters.TileSheet.Lookup ("cleric" + sex);
+			className = "cleric";
 			break;
 		case PlayerCharacter.ClassType.Fighter:
-			pcSpriteId = tileMapCharacters.TileSheet.Lookup ("fighter" + sex);
+			className = "fighter";
 			break;
 		case PlayerCharacter.ClassType.Rogue:
-			pcSpriteId = tileMapCharacters.TileSheet.Lookup ("rogue" + sex);
+			className = "rogue";
 			break;
 		case PlayerCharacter.ClassType.Wizard:
-			pcSpriteId = tileMapCharacters.TileSheet.Lookup ("wizard" + sex);
+			className = "wizard";
 			break;		
 		}
-		//Debug.Log (pcSpriteId);
+		string spriteName = className + sex;
+		Debug.Log ("player sprite:" + spriteName);
+		
+		spritePC = GameObject.Find ("SpritePC");
+		spritePC.GetComponent<SpriteRenderer> ().sprite = FindSpriteInTextures (spriteName, texturesPC);
 	}
 	
 	void RenderMap ()
@@ -452,7 +478,9 @@ public class GameController : MonoBehaviour
 		//tileMapCharacters.ClearTile (pc.Location.x, pc.Location.y, 0);
 		CheckInput ();
 		//draw the character at its location
-		tileMapCharacters [pc.Location.x, pc.Location.y] = pcSpriteId;
+		Rect pcLoc = tileMapTerrain.GetTileBoundsLocal (pc.Location.x, pc.Location.y);
+		spritePC.transform.position = new Vector3 (pcLoc.center.x, pcLoc.center.y, 0);
+		//tileMapCharacters [pc.Location.x, pc.Location.y] = pcSpriteId;
 		//if (pcIsFlipped) {
 		//	tileMapCharacters.SetTileFlags (pc.Location.x, pc.Location.y, 0, tk2dTileFlags.FlipX);
 		//}
@@ -460,7 +488,7 @@ public class GameController : MonoBehaviour
 		RenderItems ();
 		
 		//camera.transform.position = new Vector3 (pc.Location.x * cameraScaleFactor, pc.Location.y * cameraScaleFactor, -10);	
-		Rect pcLoc = tileMapTerrain.GetTileBoundsLocal (pc.Location.x, pc.Location.y);
+		
 		camera.transform.position = new Vector3 (pcLoc.center.x, pcLoc.center.y, -10);
 	}
 	

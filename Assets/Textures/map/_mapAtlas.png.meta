@@ -56,33 +56,33 @@ TextureImporter:
     21300102: doorClosed_1
     21300104: doorOpen_1
     21300106: doorLocked_1
-    21300108: _mapAtlas_54
-    21300110: _mapAtlas_55
-    21300112: _mapAtlas_56
-    21300114: _mapAtlas_57
-    21300116: _mapAtlas_58
-    21300118: _mapAtlas_59
-    21300120: _mapAtlas_60
-    21300122: _mapAtlas_61
-    21300124: _mapAtlas_62
-    21300126: _mapAtlas_63
-    21300128: _mapAtlas_64
-    21300130: _mapAtlas_65
-    21300132: _mapAtlas_66
-    21300134: _mapAtlas_67
-    21300136: _mapAtlas_68
-    21300138: _mapAtlas_69
-    21300140: _mapAtlas_70
-    21300142: _mapAtlas_71
-    21300144: _mapAtlas_72
-    21300146: _mapAtlas_73
-    21300148: _mapAtlas_74
-    21300150: _mapAtlas_75
-    21300152: _mapAtlas_76
-    21300154: _mapAtlas_77
-    21300156: _mapAtlas_78
-    21300158: _mapAtlas_79
-    21300160: _mapAtlas_80
+    21300108: pillar0_2
+    21300110: pillar1_2
+    21300112: pillar2_2
+    21300114: floor0_2
+    21300116: floor1_2
+    21300118: floor2_2
+    21300120: stairsUp_2
+    21300122: stairsDown_2
+    21300124: pillar3_2
+    21300126: wallE_2
+    21300128: wallEW_2
+    21300130: wallW_2
+    21300132: wallS_2
+    21300134: wallNS_2
+    21300136: wallN_2
+    21300138: wallES_2
+    21300140: wallSW_2
+    21300142: wallNE_2
+    21300144: wallNW_2
+    21300146: wallNESW_2
+    21300148: wallESW_2
+    21300150: wallNSW_2
+    21300152: wallNES_2
+    21300154: wallNEW_2
+    21300156: doorClosed_2
+    21300158: doorOpen_2
+    21300160: doorLocked_2
     21300162: _mapAtlas_81
     21300164: _mapAtlas_82
     21300166: _mapAtlas_83
@@ -745,7 +745,7 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: _mapAtlas_54
+    - name: pillar0_2
       rect:
         serializedVersion: 2
         x: 0
@@ -755,7 +755,7 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: _mapAtlas_55
+    - name: pillar1_2
       rect:
         serializedVersion: 2
         x: 24
@@ -765,7 +765,7 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: _mapAtlas_56
+    - name: pillar2_2
       rect:
         serializedVersion: 2
         x: 48
@@ -775,7 +775,7 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: _mapAtlas_57
+    - name: floor0_2
       rect:
         serializedVersion: 2
         x: 72
@@ -785,7 +785,7 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: _mapAtlas_58
+    - name: floor1_2
       rect:
         serializedVersion: 2
         x: 96
@@ -795,7 +795,7 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: _mapAtlas_59
+    - name: floor2_2
       rect:
         serializedVersion: 2
         x: 120
@@ -805,7 +805,7 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: _mapAtlas_60
+    - name: stairsUp_2
       rect:
         serializedVersion: 2
         x: 144
@@ -815,7 +815,7 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: _mapAtlas_61
+    - name: stairsDown_2
       rect:
         serializedVersion: 2
         x: 168
@@ -825,7 +825,7 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: _mapAtlas_62
+    - name: pillar3_2
       rect:
         serializedVersion: 2
         x: 192
@@ -835,7 +835,7 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: _mapAtlas_63
+    - name: wallE_2
       rect:
         serializedVersion: 2
         x: 216
@@ -845,7 +845,7 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: _mapAtlas_64
+    - name: wallEW_2
       rect:
         serializedVersion: 2
         x: 240
@@ -855,7 +855,7 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: _mapAtlas_65
+    - name: wallW_2
       rect:
         serializedVersion: 2
         x: 264
@@ -865,7 +865,7 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: _mapAtlas_66
+    - name: wallS_2
       rect:
         serializedVersion: 2
         x: 288
@@ -875,7 +875,7 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: _mapAtlas_67
+    - name: wallNS_2
       rect:
         serializedVersion: 2
         x: 312
@@ -885,7 +885,7 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: _mapAtlas_68
+    - name: wallN_2
       rect:
         serializedVersion: 2
         x: 336
@@ -895,7 +895,7 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: _mapAtlas_69
+    - name: wallES_2
       rect:
         serializedVersion: 2
         x: 360
@@ -905,7 +905,7 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: _mapAtlas_70
+    - name: wallSW_2
       rect:
         serializedVersion: 2
         x: 384
@@ -915,7 +915,7 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: _mapAtlas_71
+    - name: wallNE_2
       rect:
         serializedVersion: 2
         x: 408
@@ -925,7 +925,7 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: _mapAtlas_72
+    - name: wallNW_2
       rect:
         serializedVersion: 2
         x: 432
@@ -935,7 +935,7 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: _mapAtlas_73
+    - name: wallNESW_2
       rect:
         serializedVersion: 2
         x: 456
@@ -945,7 +945,7 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: _mapAtlas_74
+    - name: wallESW_2
       rect:
         serializedVersion: 2
         x: 480
@@ -955,7 +955,7 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: _mapAtlas_75
+    - name: wallNSW_2
       rect:
         serializedVersion: 2
         x: 504
@@ -965,7 +965,7 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: _mapAtlas_76
+    - name: wallNES_2
       rect:
         serializedVersion: 2
         x: 528
@@ -975,7 +975,7 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: _mapAtlas_77
+    - name: wallNEW_2
       rect:
         serializedVersion: 2
         x: 552
@@ -985,7 +985,7 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: _mapAtlas_78
+    - name: doorClosed_2
       rect:
         serializedVersion: 2
         x: 576
@@ -995,7 +995,7 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: _mapAtlas_79
+    - name: doorOpen_2
       rect:
         serializedVersion: 2
         x: 600
@@ -1005,7 +1005,7 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: _mapAtlas_80
+    - name: doorLocked_2
       rect:
         serializedVersion: 2
         x: 624
