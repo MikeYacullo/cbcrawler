@@ -428,7 +428,11 @@ public class GameController : MonoBehaviour
 			for (int w = 0; w<map.Width; w++) {
 				//hide the whole map to start
 				tileMapTerrain [w, h] = TILE_SOLIDBLACK;
-				tileMapFOW [w, h] = TILE_FOW_VIS0;
+				if (map.Cells [w, h].Visited) {
+					tileMapFOW [w, h] = TILE_FOW_VIS0;
+				} else {
+					tileMapFOW [w, h] = TILE_FOW_VIS0;
+				}
 				switch (map.Cells [w, h].Type) {
 				case Map.CellType.Door:
 					//all doors start closed
@@ -700,6 +704,7 @@ public class GameController : MonoBehaviour
 		map.Cells [pc.Location.x, pc.Location.y].Passable = false;
 		map.pcLocation = newLocation;
 		GetLoot (newLocation);
+		SeeTilesFlood ();
 	}
 	
 	private void CombatCheck (Actor attacker, Actor defender)
@@ -808,10 +813,8 @@ public class GameController : MonoBehaviour
 	{
 		List<Address> vTiles = map.findVisibleCellsFlood (new Address (pc.Location.x, pc.Location.y), pc.Stats.VisionRange);
 		foreach (Address a in vTiles) {
-			if (!map.Cells [a.x, a.y].Visited) {
-				map.Cells [a.x, a.y].Visited = true;
-				tileMapFOW [a.x, a.y] = TILE_FOW_VIS100;
-			}
+			map.Cells [a.x, a.y].Visited = true;
+			tileMapFOW [a.x, a.y] = TILE_FOW_VIS100;
 		}
 	}
 	
