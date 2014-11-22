@@ -7,8 +7,8 @@ using UnityTileMap;
 public class GameController : MonoBehaviour
 {
 
-	public TileMapBehaviour tileMapTerrain;
-	public TileMapBehaviour tileMapItems;
+	private TileMapBehaviour tileMapTerrain;
+	private TileMapBehaviour tileMapFOW;
 
 	private GameObject spritePC;
 	private Sprite[] texturesPC;
@@ -90,19 +90,27 @@ public class GameController : MonoBehaviour
 	int ENEMIES_PER_LEVEL_COUNT = 10;
 	
 	//tilemap constants
-	Color COLOR_NOTHING = new Color (0, 0, 0, 0);
 	int[] mapSpriteVariations;
 	int SPRITE_VARIATIONS_COUNT = 3;
 	int SPRITE_WIDTH = 24;
-	int LAYER_FLOOR_AND_WALLS = 0;
-	int LAYER_DOORS_AND_STAIRS = 1;
-	int LAYER_VISIBILITY = 2;
+
 	int TILE_FLOORDEFAULT;
 	int TILE_DOORCLOSED;
 	int TILE_DOOROPEN;
 	int TILE_STAIRSUP;
 	int TILE_STAIRSDOWN;
 	int TILE_SOLIDBLACK;
+	
+	//Fog of war viibility percent
+	int TILE_FOW_VIS0;
+	int TILE_FOW_VIS50;
+	int TILE_FOW_VIS100;
+	
+	int Z_TERRAIN = 4;
+	int Z_DECORATION = 3;
+	int Z_ITEMS = 2;
+	int Z_ACTORS = 1;
+	int Z_FOW = 0;
 	
 	void Start ()
 	{
@@ -117,12 +125,19 @@ public class GameController : MonoBehaviour
 		VOLUME = float.Parse (PlayerPrefs.GetString ("soundLevel"));
 		
 		tileMapTerrain = (TileMapBehaviour)GameObject.Find ("TileMapTerrain").GetComponent<TileMapBehaviour> ();
-		txtMessages = GameObject.Find ("txtMessages").GetComponent<UnityEngine.UI.Text> ();
-		
+		tileMapFOW = (TileMapBehaviour)GameObject.Find ("TileMapFOW").GetComponent<TileMapBehaviour> ();
 		var settings = new TileMeshSettings (mapWidth, mapHeight, SPRITE_WIDTH);
-		//tileMapCharacters.MeshSettings = settings;
-		//tileMapItems.MeshSettings = settings;
 		tileMapTerrain.MeshSettings = settings;
+		tileMapFOW.MeshSettings = settings;
+		TILE_FOW_VIS0 = tileMapFOW.TileSheet.Lookup ("vision0");
+		TILE_FOW_VIS50 = tileMapFOW.TileSheet.Lookup ("vision50");
+		TILE_FOW_VIS100 = tileMapFOW.TileSheet.Lookup ("vision100");
+		
+		MoveGameObjectToZLevel (tileMapTerrain.gameObject, Z_TERRAIN);
+		MoveGameObjectToZLevel (tileMapFOW.gameObject, Z_FOW);
+		
+		
+		txtMessages = GameObject.Find ("txtMessages").GetComponent<UnityEngine.UI.Text> ();
 		
 		pnlTransition = GameObject.Find ("pnlTransition");
 		txtTransition = GameObject.Find ("txtTransition").GetComponent<UnityEngine.UI.Text> ();
@@ -155,6 +170,11 @@ public class GameController : MonoBehaviour
 		MoveToLevel (0);
 	}
 	
+	void MoveGameObjectToZLevel (GameObject obj, int zLevel)
+	{
+		obj.transform.position = new Vector3 (obj.transform.position.x, obj.transform.position.y, zLevel);
+	}
+	
 	void InitTextures ()
 	{
 		texturesPC = Resources.LoadAll<Sprite> ("Textures/Player");
@@ -164,7 +184,6 @@ public class GameController : MonoBehaviour
 	
 	Sprite FindSpriteInTextures (string spriteName, Sprite[] textures)
 	{
-		Debug.Log ("? " + spriteName);
 		string[] names = new string[textures.Length];
 		for (int i=0; i<names.Length; i++) {
 			if (textures [i].name == spriteName) {
@@ -214,6 +233,7 @@ public class GameController : MonoBehaviour
 			items = levelItems [currentLevel];
 			MakeItemSprites ();
 		} else {
+			items = new List<Item> ();
 			for (int i=0; i<ITEMS_PER_LEVEL_COUNT; i++) {
 				//pick an item from the list
 				Item item = Factory.GetItemForLevel (currentLevel);
@@ -221,7 +241,8 @@ public class GameController : MonoBehaviour
 				AddItem (item);
 			}
 		}
-		
+		Debug.Log (items.Count + "items");
+		Debug.Log (itemSprites.Count + "itemSprites");
 	}
 
 	void MakeItemSprites ()
@@ -242,6 +263,7 @@ public class GameController : MonoBehaviour
 		GameObject sprite = new GameObject ();
 		SpriteRenderer sr = sprite.AddComponent<SpriteRenderer> ();
 		sr.sprite = FindSpriteInTextures (item.SpriteName, texturesItem);
+		MoveGameObjectToZLevel (sprite, Z_ITEMS);
 		MoveSpriteTo (sprite, item.Location.x, item.Location.y);
 		itemSprites.Add (sprite);
 	}
@@ -336,6 +358,7 @@ public class GameController : MonoBehaviour
 			SpriteRenderer sr = enemySprite.AddComponent<SpriteRenderer> ();
 			sr.sprite = FindSpriteInTextures (enemies [i].SpriteName, texturesNPC);
 			MoveSpriteTo (enemySprite, enemies [i].Location.x, enemies [i].Location.y);
+			MoveGameObjectToZLevel (enemySprite, Z_ACTORS);
 			enemySprites.Add (enemySprite);	
 		}
 	}
@@ -358,7 +381,7 @@ public class GameController : MonoBehaviour
 	void MoveSpriteTo (GameObject sprite, int gridX, int gridY)
 	{
 		Rect rect = tileMapTerrain.GetTileBoundsLocal (gridX, gridY);
-		sprite.transform.position = new Vector3 (rect.center.x, rect.center.y, 0);
+		sprite.transform.position = new Vector3 (rect.center.x, rect.center.y, sprite.transform.position.z);
 	}
 	
 	void InitCharacterSprite ()
@@ -388,6 +411,7 @@ public class GameController : MonoBehaviour
 		
 		spritePC = GameObject.Find ("SpritePC");
 		spritePC.GetComponent<SpriteRenderer> ().sprite = FindSpriteInTextures (spriteName, texturesPC);
+		MoveGameObjectToZLevel (spritePC, Z_ACTORS);
 	}
 	
 	void RenderMap ()
@@ -404,7 +428,7 @@ public class GameController : MonoBehaviour
 			for (int w = 0; w<map.Width; w++) {
 				//hide the whole map to start
 				tileMapTerrain [w, h] = TILE_SOLIDBLACK;
-				
+				tileMapFOW [w, h] = TILE_FOW_VIS0;
 				switch (map.Cells [w, h].Type) {
 				case Map.CellType.Door:
 					//all doors start closed
@@ -512,7 +536,7 @@ public class GameController : MonoBehaviour
 		CheckInput ();
 		//draw the character at its location
 		Rect pcLoc = tileMapTerrain.GetTileBoundsLocal (pc.Location.x, pc.Location.y);
-		spritePC.transform.position = new Vector3 (pcLoc.center.x, pcLoc.center.y, 0);
+		spritePC.transform.position = new Vector3 (pcLoc.center.x, pcLoc.center.y, Z_ACTORS);
 		if (pcIsFlipped) {
 			spritePC.transform.localScale = new Vector3 (-1, 1, 1);
 		} else {
@@ -782,18 +806,13 @@ public class GameController : MonoBehaviour
 	
 	private void SeeTilesFlood ()
 	{
-		bool newCellsSeen = false;
 		List<Address> vTiles = map.findVisibleCellsFlood (new Address (pc.Location.x, pc.Location.y), pc.Stats.VisionRange);
 		foreach (Address a in vTiles) {
-			//if (!map.Cells [a.x, a.y].Visited) {
-			map.Cells [a.x, a.y].Visited = true;
-			//tileMapTerrain.ClearTile (a.x, a.y, LAYER_VISIBILITY);
-			newCellsSeen = true;
-			//}
+			if (!map.Cells [a.x, a.y].Visited) {
+				map.Cells [a.x, a.y].Visited = true;
+				tileMapFOW [a.x, a.y] = TILE_FOW_VIS100;
+			}
 		}
-		//if (newCellsSeen) {
-		//tileMapTerrain.Build ();
-		//}
 	}
 	
 	public void ShowInventory ()
