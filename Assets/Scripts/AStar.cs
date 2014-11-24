@@ -79,9 +79,7 @@ public class AStar
 	
 	private List<Node> FindNeighbors (Map map, int x, int y)
 	{
-		Debug.Log ("Finding neighbors of " + x + "," + y);
 		List<Node> nodes = new List<Node> ();
-		Map.Cell[,] cells = map.Cells;
 		//orthoganal only
 		if (map.Contains (new Address (x, y - 1)) && map.Cells [x, y - 1].Passable) {
 			nodes.Add (_world [x, y - 1]);

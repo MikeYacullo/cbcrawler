@@ -46,6 +46,7 @@ public class GameController : MonoBehaviour
 	private TileMapBehaviour tileMapCharacters;
 	private bool pcIsFlipped = false;
 	private bool pcIsPathfinding = false;
+	Stack<AStar.Node> pathPC;
 	
 	private UnityEngine.UI.Text txtMessages;
 	List<string> messages = new List<string> ();
@@ -64,8 +65,6 @@ public class GameController : MonoBehaviour
 	public Sprite spriteHeartEmpty;
 
 	private int mapWidth = 35, mapHeight = 35;
-	
-	private int cameraScaleFactor = 24;
 	
 	public float VOLUME = 1.0f;
 	public AudioClip audioStep;
@@ -322,6 +321,7 @@ public class GameController : MonoBehaviour
 	
 	void InitPlayerCharacter ()
 	{
+		pcIsPathfinding = false;
 		if (currentLevel > previousLevel) {
 			//coming down stairs
 			MovePlayerTo (map.entranceLocation);
@@ -535,10 +535,39 @@ public class GameController : MonoBehaviour
 		}
 	}
 	
+	private void ClearPCPath ()
+	{
+		if (pathPC != null) {
+			while (pathPC.Count >0) {
+				AStar.Node nextStep;
+				nextStep = pathPC.Pop ();
+				tileMapFOW [nextStep.x, nextStep.y] = TILE_FOW_VIS100;
+			}
+		}
+		pcIsPathfinding = false;
+	}
+	
+	private void MovePCOnPath ()
+	{
+		AStar.Node nextStep;
+		nextStep = pathPC.Pop ();
+		if (nextStep == null || !map.Cells [nextStep.x, nextStep.y].Passable) {
+			//no more steps or path blocked
+			ClearPCPath ();
+		} else {
+			tileMapFOW [nextStep.x, nextStep.y] = TILE_FOW_VIS100;
+			TryMovePlayerTo (new Address (nextStep.x, nextStep.y));
+			if (pathPC.Count == 0) {
+				pcIsPathfinding = false;
+			}
+		}
+		gameState = GameState.TurnEnemy;
+	}
+	
 	private void TakePlayerTurn ()
 	{
 		if (pcIsPathfinding) {
-			//try to go to the next square
+			MovePCOnPath ();
 		} else {
 			CheckInput ();
 		}
@@ -577,11 +606,11 @@ public class GameController : MonoBehaviour
 		if (cheats) {
 		
 			if (Input.GetKeyDown (KeyCode.X)) {
-				MovePlayerTo (map.exitLocation);
+				TryMovePlayerTo (map.exitLocation);
 			}
 			
 			if (Input.GetKeyDown (KeyCode.N)) {
-				MovePlayerTo (map.entranceLocation);
+				TryMovePlayerTo (map.entranceLocation);
 			}
 		
 		}
@@ -595,10 +624,10 @@ public class GameController : MonoBehaviour
 			if (cell.Visited && cell.Passable) {
 				//find a path to that cell
 				AStar astar = new AStar (map);
-				Stack<AStar.Node> path = astar.GetFastestPath (pc.Location, new Address (tileClicked.x, tileClicked.y));
-				foreach (AStar.Node node in path) {
-					Debug.Log (node.x + "," + node.y);
+				pathPC = astar.GetFastestPath (pc.Location, new Address (tileClicked.x, tileClicked.y));
+				foreach (AStar.Node node in pathPC) {
 					tileMapFOW [node.x, node.y] = TILE_FOW_VIS50;
+					pcIsPathfinding = true;
 				}
 			}
 		}
@@ -632,24 +661,7 @@ public class GameController : MonoBehaviour
 		}
 		if (isMoving) { 
 			if (IsPassable (newX, newY)) {
-				//open a closed door instead of moving in
-				if (tileMapTerrain [newX, newY] == TILE_DOORCLOSED) {
-					tileMapTerrain [newX, newY] = TILE_DOOROPEN;
-					map.Cells [newX, newY].BlocksVision = false;
-					audio.PlayOneShot (audioDoor, VOLUME);
-				} else if (map.Cells [newX, newY].Type == Map.CellType.Exit && currentLevel != LEVEL_COUNT - 1) {
-					MovePlayerTo (new Address (newX, newY));
-					map.Cells [pc.Location.x, pc.Location.y].Passable = true;
-					MoveToLevel (currentLevel + 1);
-				} else if (map.Cells [newX, newY].Type == Map.CellType.Entrance && currentLevel != 0) {
-					MovePlayerTo (new Address (newX, newY));
-					map.Cells [pc.Location.x, pc.Location.y].Passable = true;
-					MoveToLevel (currentLevel - 1);
-				} else {
-					MovePlayerTo (new Address (newX, newY));
-					audio.PlayOneShot (audioStep, VOLUME);
-				}
-				SeeTilesFlood ();
+				TryMovePlayerTo (new Address (newX, newY));
 			} else {
 				//combat?
 				//does the square contain an enemy?
@@ -714,6 +726,30 @@ public class GameController : MonoBehaviour
 		return itemIndex;
 	}
 	
+	private void TryMovePlayerTo (Address newLocation)
+	{
+		int newX = newLocation.x;
+		int newY = newLocation.y;
+		//open a closed door instead of moving in
+		if (tileMapTerrain [newX, newY] == TILE_DOORCLOSED) {
+			tileMapTerrain [newX, newY] = TILE_DOOROPEN;
+			map.Cells [newX, newY].BlocksVision = false;
+			audio.PlayOneShot (audioDoor, VOLUME);
+		} else if (map.Cells [newX, newY].Type == Map.CellType.Exit && currentLevel != LEVEL_COUNT - 1) {
+			MovePlayerTo (new Address (newX, newY));
+			map.Cells [pc.Location.x, pc.Location.y].Passable = true;
+			MoveToLevel (currentLevel + 1);
+		} else if (map.Cells [newX, newY].Type == Map.CellType.Entrance && currentLevel != 0) {
+			MovePlayerTo (new Address (newX, newY));
+			map.Cells [pc.Location.x, pc.Location.y].Passable = true;
+			MoveToLevel (currentLevel - 1);
+		} else {
+			MovePlayerTo (new Address (newX, newY));
+			audio.PlayOneShot (audioStep, VOLUME);
+		}
+		SeeTilesFlood ();
+	}
+	
 	private void MovePlayerTo (Address newLocation)
 	{
 		//old cell can now be walked through
@@ -729,6 +765,8 @@ public class GameController : MonoBehaviour
 	private void CombatCheck (Actor attacker, Actor defender)
 	{
 		//TODO make actual combat system
+		//combat cancels pc pathfinding (whether or not pc is attacker)
+		ClearPCPath ();
 		DisplayMessage (attacker.Name + " attacks " + defender.Name + "...");
 		if (UnityEngine.Random.Range (1, 10) > 4) {
 			//hit
@@ -832,8 +870,10 @@ public class GameController : MonoBehaviour
 	{
 		List<Address> vTiles = map.findVisibleCellsFlood (new Address (pc.Location.x, pc.Location.y), pc.Stats.VisionRange);
 		foreach (Address a in vTiles) {
+			//if (!map.Cells [a.x, a.y].Visited) {
 			map.Cells [a.x, a.y].Visited = true;
 			tileMapFOW [a.x, a.y] = TILE_FOW_VIS100;
+			//}
 		}
 	}
 	
