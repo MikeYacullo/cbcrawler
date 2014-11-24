@@ -45,6 +45,7 @@ public class GameController : MonoBehaviour
 	private int pcSpriteId;
 	private TileMapBehaviour tileMapCharacters;
 	private bool pcIsFlipped = false;
+	private bool pcIsPathfinding = false;
 	
 	private UnityEngine.UI.Text txtMessages;
 	List<string> messages = new List<string> ();
@@ -188,7 +189,6 @@ public class GameController : MonoBehaviour
 		for (int i=0; i<names.Length; i++) {
 			if (textures [i].name == spriteName) {
 				return textures [i];
-				break;
 			} 
 		}
 		return null;
@@ -537,7 +537,11 @@ public class GameController : MonoBehaviour
 	
 	private void TakePlayerTurn ()
 	{
-		CheckInput ();
+		if (pcIsPathfinding) {
+			//try to go to the next square
+		} else {
+			CheckInput ();
+		}
 		//draw the character at its location
 		Rect pcLoc = tileMapTerrain.GetTileBoundsLocal (pc.Location.x, pc.Location.y);
 		spritePC.transform.position = new Vector3 (pcLoc.center.x, pcLoc.center.y, Z_ACTORS);
@@ -581,8 +585,23 @@ public class GameController : MonoBehaviour
 			}
 		
 		}
-	
 		#endregion
+		
+		if (Input.GetMouseButtonDown (0)) {
+			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
+			Vector2Int tileClicked = new Vector2Int ((int)ray.origin.x, (int)ray.origin.y);
+			Map.Cell cell = map.Cells [tileClicked.x, tileClicked.y];
+			Debug.Log (tileClicked.x + "," + tileClicked.y);
+			if (cell.Visited && cell.Passable) {
+				//find a path to that cell
+				AStar astar = new AStar (map);
+				Stack<AStar.Node> path = astar.GetFastestPath (pc.Location, new Address (tileClicked.x, tileClicked.y));
+				foreach (AStar.Node node in path) {
+					Debug.Log (node.x + "," + node.y);
+					tileMapFOW [node.x, node.y] = TILE_FOW_VIS50;
+				}
+			}
+		}
 		
 		if (Input.GetKeyDown (KeyCode.RightBracket) && camera.orthographicSize >= 0.0) {
 			camera.orthographicSize -= 1.0f; 
