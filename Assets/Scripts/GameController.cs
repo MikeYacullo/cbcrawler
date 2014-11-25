@@ -14,6 +14,7 @@ public class GameController : MonoBehaviour
 	private Sprite[] texturesPC;
 	private Sprite[] texturesNPC;
 	private Sprite[] texturesItem;
+	private Sprite[] texturesItemDecor;
 	
 	private Camera camera;
 
@@ -74,6 +75,7 @@ public class GameController : MonoBehaviour
 	public AudioClip audioWhiff;
 	public AudioClip audioDieEnemy;
 	public AudioClip audioLoot;
+	public AudioClip audioChestOpen;
 	
 	private List<Enemy> enemies = new List<Enemy> ();
 	private List<GameObject> enemySprites = new List<GameObject> ();
@@ -86,7 +88,7 @@ public class GameController : MonoBehaviour
 	private List<Type>[] levelItemTypes;
 	
 	int LEVEL_COUNT = 5;
-	int ITEMS_PER_LEVEL_COUNT = 1;
+	int ITEMS_PER_LEVEL_COUNT = 10;
 	int ENEMIES_PER_LEVEL_COUNT = 10;
 	
 	//tilemap constants
@@ -107,7 +109,7 @@ public class GameController : MonoBehaviour
 	int TILE_FOW_VIS100;
 	
 	int Z_TERRAIN = 4;
-	int Z_DECORATION = 3;
+	int Z_DECOR = 3;
 	int Z_ITEMS = 2;
 	int Z_ACTORS = 1;
 	int Z_FOW = 0;
@@ -180,6 +182,7 @@ public class GameController : MonoBehaviour
 		texturesPC = Resources.LoadAll<Sprite> ("Textures/Player");
 		texturesNPC = Resources.LoadAll<Sprite> ("Textures/NPC");
 		texturesItem = Resources.LoadAll<Sprite> ("Textures/Item");
+		texturesItemDecor = Resources.LoadAll<Sprite> ("Textures/ItemDecor");
 	}
 	
 	Sprite FindSpriteInTextures (string spriteName, Sprite[] textures)
@@ -235,13 +238,16 @@ public class GameController : MonoBehaviour
 			items = new List<Item> ();
 			for (int i=0; i<ITEMS_PER_LEVEL_COUNT; i++) {
 				//pick an item from the list
-				Item item = Factory.GetItemForLevel (currentLevel);
-				item.Location = map.GetRandomCell (true);
-				AddItem (item);
+				//Item item = Factory.GetItemForLevel (currentLevel);
+				//item.Location = map.GetRandomCell (true);
+				//AddItem (item);
+				ItemChest chest = new ItemChest ();
+				chest.Location = map.GetRandomOpenArea ();
+				map.Cells [chest.Location.x, chest.Location.y].Passable = false;
+				AddItem (chest);
 			}
 		}
-		Debug.Log (items.Count + "items");
-		Debug.Log (itemSprites.Count + "itemSprites");
+		
 	}
 
 	void MakeItemSprites ()
@@ -261,10 +267,20 @@ public class GameController : MonoBehaviour
 	{
 		GameObject sprite = new GameObject ();
 		SpriteRenderer sr = sprite.AddComponent<SpriteRenderer> ();
-		sr.sprite = FindSpriteInTextures (item.SpriteName, texturesItem);
+		if (item is ItemDecor) {
+			sr.sprite = FindSpriteInTextures (item.SpriteName, texturesItemDecor);
+		} else {
+			sr.sprite = FindSpriteInTextures (item.SpriteName, texturesItem);
+		}
 		MoveGameObjectToZLevel (sprite, Z_ITEMS);
 		MoveSpriteTo (sprite, item.Location.x, item.Location.y);
 		itemSprites.Add (sprite);
+	}
+	
+	void SetSprite (GameObject obj, Sprite sprite)
+	{
+		SpriteRenderer sr = obj.GetComponent<SpriteRenderer> ();
+		sr.sprite = sprite;
 	}
 	
 	void RemoveItem (int itemIndex)
@@ -646,11 +662,9 @@ public class GameController : MonoBehaviour
 		int newX = pc.Location.x, newY = pc.Location.y;
 		if (Input.GetKeyDown (KeyCode.D) || Input.GetKeyDown (KeyCode.RightArrow)) {
 			newX = newX + 1;
-			pcIsFlipped = true;
 			isMoving = true;
 		} else if (Input.GetKeyDown (KeyCode.A) || Input.GetKeyDown (KeyCode.LeftArrow)) {
 			newX = newX - 1;
-			pcIsFlipped = false;
 			isMoving = true;
 		} else if (Input.GetKeyDown (KeyCode.W) || Input.GetKeyDown (KeyCode.UpArrow)) {
 			newY = newY + 1;
@@ -660,30 +674,7 @@ public class GameController : MonoBehaviour
 			isMoving = true;
 		}
 		if (isMoving) { 
-			if (IsPassable (newX, newY)) {
-				TryMovePlayerTo (new Address (newX, newY));
-			} else {
-				//combat?
-				//does the square contain an enemy?
-				int enemyIndex = EnemyAt (new Address (newX, newY));
-				if (enemyIndex != -1) {
-					CombatCheck (pc, enemies [enemyIndex]);
-					//TODO encapsulate
-					if (enemies [enemyIndex].Stats.CurrentHealth <= 0) {
-						audio.PlayOneShot (audioDieEnemy, VOLUME);
-						//drop loot
-						Item loot = enemies [enemyIndex].Loot;
-						if (loot != null) {
-							loot.Location = new Address (enemies [enemyIndex].Location.x, enemies [enemyIndex].Location.y);
-							AddItem (loot);
-							DisplayMessage (enemies [enemyIndex].Name + " drops " + loot.Name);
-						}
-						//remove enemy
-						map.Cells [enemies [enemyIndex].Location.x, enemies [enemyIndex].Location.y].Passable = true;
-						RemoveEnemy (enemyIndex);	
-					}
-				}
-			}
+			TryMovePlayerTo (new Address (newX, newY));
 			UpdateHud ();
 			gameState = GameState.TurnEnemy;
 		}
@@ -730,24 +721,82 @@ public class GameController : MonoBehaviour
 	{
 		int newX = newLocation.x;
 		int newY = newLocation.y;
-		//open a closed door instead of moving in
-		if (tileMapTerrain [newX, newY] == TILE_DOORCLOSED) {
-			tileMapTerrain [newX, newY] = TILE_DOOROPEN;
-			map.Cells [newX, newY].BlocksVision = false;
-			audio.PlayOneShot (audioDoor, VOLUME);
-		} else if (map.Cells [newX, newY].Type == Map.CellType.Exit && currentLevel != LEVEL_COUNT - 1) {
-			MovePlayerTo (new Address (newX, newY));
-			map.Cells [pc.Location.x, pc.Location.y].Passable = true;
-			MoveToLevel (currentLevel + 1);
-		} else if (map.Cells [newX, newY].Type == Map.CellType.Entrance && currentLevel != 0) {
-			MovePlayerTo (new Address (newX, newY));
-			map.Cells [pc.Location.x, pc.Location.y].Passable = true;
-			MoveToLevel (currentLevel - 1);
-		} else {
-			MovePlayerTo (new Address (newX, newY));
-			audio.PlayOneShot (audioStep, VOLUME);
+		//change facing if needed
+		if (newX > pc.Location.x) {
+			pcIsFlipped = true;
 		}
-		SeeTilesFlood ();
+		if (newX < pc.Location.x) {
+			pcIsFlipped = false;
+		}
+		if (IsPassable (newX, newY)) {
+			//open a closed door instead of moving in
+			if (tileMapTerrain [newX, newY] == TILE_DOORCLOSED) {
+				tileMapTerrain [newX, newY] = TILE_DOOROPEN;
+				map.Cells [newX, newY].BlocksVision = false;
+				audio.PlayOneShot (audioDoor, VOLUME);
+			} else if (map.Cells [newX, newY].Type == Map.CellType.Exit && currentLevel != LEVEL_COUNT - 1) {
+				MovePlayerTo (new Address (newX, newY));
+				map.Cells [pc.Location.x, pc.Location.y].Passable = true;
+				MoveToLevel (currentLevel + 1);
+			} else if (map.Cells [newX, newY].Type == Map.CellType.Entrance && currentLevel != 0) {
+				MovePlayerTo (new Address (newX, newY));
+				map.Cells [pc.Location.x, pc.Location.y].Passable = true;
+				MoveToLevel (currentLevel - 1);
+			} else {
+				MovePlayerTo (new Address (newX, newY));
+				audio.PlayOneShot (audioStep, VOLUME);
+			}
+			SeeTilesFlood ();	
+		} else {
+			//is there a chest there?
+			int itemIndex = ItemAt (new Address (newX, newY));
+			if (itemIndex != -1 && items [itemIndex] is ItemChest) {
+				ItemChest chest = (ItemChest)items [itemIndex];
+				if (chest.State == ItemChest.ChestState.Closed) {
+					
+				}
+				switch (chest.State) {
+				case ItemChest.ChestState.Closed:
+					chest.SpriteName = "chestopen";
+					chest.State = ItemChest.ChestState.Open;
+					audio.PlayOneShot (audioChestOpen, VOLUME);
+					break;
+				case ItemChest.ChestState.Open:
+					chest.SpriteName = "chestempty";
+					//generate loot
+					Item loot = Factory.GetItemForLevel (currentLevel);
+					loot.Location = new Address (pc.Location.x, pc.Location.y);
+					AddItem (loot);
+					GetLoot (pc.Location);
+					chest.State = ItemChest.ChestState.Empty;
+					break;
+				default:
+					break;
+				}
+				Sprite newSprite = FindSpriteInTextures (chest.SpriteName, texturesItemDecor);
+				SetSprite (itemSprites [itemIndex], newSprite);
+			}
+			//combat?
+			//does the square contain an enemy?
+			int enemyIndex = EnemyAt (new Address (newX, newY));
+			if (enemyIndex != -1) {
+				CombatCheck (pc, enemies [enemyIndex]);
+				//TODO encapsulate
+				if (enemies [enemyIndex].Stats.CurrentHealth <= 0) {
+					audio.PlayOneShot (audioDieEnemy, VOLUME);
+					//drop loot
+					Item loot = enemies [enemyIndex].Loot;
+					if (loot != null) {
+						loot.Location = new Address (enemies [enemyIndex].Location.x, enemies [enemyIndex].Location.y);
+						AddItem (loot);
+						DisplayMessage (enemies [enemyIndex].Name + " drops " + loot.Name);
+					}
+					//remove enemy
+					map.Cells [enemies [enemyIndex].Location.x, enemies [enemyIndex].Location.y].Passable = true;
+					RemoveEnemy (enemyIndex);	
+				}
+			}
+		}
 	}
 	
 	private void MovePlayerTo (Address newLocation)

@@ -19,7 +19,33 @@ public enum ItemSlotType
 	Ring
 }
 
-public class ItemEquippable
+public class ItemDecor:Item
+{
+
+}
+
+public class ItemDecorBlocking:ItemDecor
+{
+
+}
+
+public class ItemChest:ItemDecorBlocking
+{
+	public enum ChestState
+	{
+		Closed,
+		Open,
+		Empty
+	}
+	public ChestState State;
+	public ItemChest ()
+	{
+		SpriteName = "chestclosed";
+		State = ChestState.Closed;
+	}
+}
+
+public class ItemEquippable:Item
 {
 	public ItemSlotType EquipSlot;
 }

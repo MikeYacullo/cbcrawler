@@ -26,6 +26,17 @@ public class Map
 		Exit = 5
 	}
 	
+	public enum Direction
+	{
+		North,
+		Northeast,
+		East,
+		Southeast,
+		South,
+		Southwest,
+		West
+	}
+	
 	public class Cell
 	{
 		public CellType Type;
@@ -74,6 +85,36 @@ public class Map
 		}
 		return new Address (x, y);
 	}
+	
+	public bool IsOpenAreaCenter (Address loc)
+	{
+		int x = loc.x;
+		int y = loc.y;
+		bool ok = true;
+		for (int xo = -1; xo<=1; xo++) {
+			for (int yo = -1; yo<=1; yo++) {
+				if (!Contains (x + xo, y + yo) || Cells [x + xo, y + yo].Type != CellType.Floor || !Cells [x + xo, y + yo].Passable) {
+					ok = false;
+				}
+			}
+		}
+		return ok;
+	}
+	
+	public Address GetRandomOpenArea ()
+	{
+		bool ok = false;
+		Address address = new Address (0, 0);
+		while (!ok) {
+			//keep doing this until we find a floor surrounded by open floor
+			address = GetRandomCell (true);
+			int x = address.x;
+			int y = address.y;
+			ok = IsOpenAreaCenter (new Address (x, y));
+		}
+		return address;
+	}
+	
 	
 	public float DistanceToPlayer (Address fromLocation)
 	{
