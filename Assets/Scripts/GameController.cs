@@ -241,10 +241,34 @@ public class GameController : MonoBehaviour
 				//Item item = Factory.GetItemForLevel (currentLevel);
 				//item.Location = map.GetRandomCell (true);
 				//AddItem (item);
+				
+				//chests
 				ItemChest chest = new ItemChest ();
 				chest.Location = map.GetRandomOpenArea ();
 				map.Cells [chest.Location.x, chest.Location.y].Passable = false;
 				AddItem (chest);
+				 
+				//webs
+				ItemWeb web;
+				Map.Direction dir;
+				dir = Map.Direction.Northeast;
+				web = new ItemWeb (dir);
+				web.Location = map.GetRandomCorner (dir);
+				AddItem (web);
+				dir = Map.Direction.Northwest;
+				web = new ItemWeb (dir);
+				web.Location = map.GetRandomCorner (dir);
+				AddItem (web);
+				dir = Map.Direction.Southeast;
+				web = new ItemWeb (dir);
+				web.Location = map.GetRandomCorner (dir);
+				AddItem (web);
+				dir = Map.Direction.Southwest;
+				web = new ItemWeb (dir);
+				web.Location = map.GetRandomCorner (dir);
+				AddItem (web);
+				
+				
 			}
 		}
 		
@@ -636,7 +660,7 @@ public class GameController : MonoBehaviour
 			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
 			Vector2Int tileClicked = new Vector2Int ((int)ray.origin.x, (int)ray.origin.y);
 			Map.Cell cell = map.Cells [tileClicked.x, tileClicked.y];
-			Debug.Log (tileClicked.x + "," + tileClicked.y);
+			//Debug.Log (tileClicked.x + "," + tileClicked.y);
 			if (cell.Visited && cell.Passable) {
 				//find a path to that cell
 				AStar astar = new AStar (map);
@@ -684,7 +708,7 @@ public class GameController : MonoBehaviour
 	{
 		//any loot to pick up?
 		int itemIndex = ItemAt (new Address (location.x, location.y));
-		if (itemIndex != -1) {
+		if (itemIndex != -1 && !(items [itemIndex] is ItemDecor)) {
 			if (pc.AddToInventory (items [itemIndex])) {
 				RemoveItem (itemIndex);
 				audio.PlayOneShot (audioLoot, VOLUME);

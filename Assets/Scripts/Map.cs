@@ -34,7 +34,8 @@ public class Map
 		Southeast,
 		South,
 		Southwest,
-		West
+		West,
+		Northwest
 	}
 	
 	public class Cell
@@ -86,19 +87,66 @@ public class Map
 		return new Address (x, y);
 	}
 	
+	public Address GetRandomCorner (Direction direction)
+	{
+		bool ok = false;
+		int x = -1;
+		int y = -1;
+		while (!ok) {
+			Address loc = GetRandomCell (true);
+			x = loc.x;
+			y = loc.y;
+			switch (direction) {
+			case Direction.Northeast:
+				if (Contains (x, y + 1) && Contains (x + 1, y) && Cells [x, y + 1].Type == CellType.Wall && Cells [x + 1, y].Type == CellType.Wall) {
+					ok = true;
+				}
+				break;
+			case Direction.Northwest:
+				if (Contains (x - 1, y) && Contains (x, y + 1) && Cells [x, y + 1].Type == CellType.Wall && Cells [x - 1, y].Type == CellType.Wall) {
+					ok = true;
+				}
+				break;
+			case Direction.Southeast:
+				if (Contains (x, y - 1) && Contains (x + 1, y) && Cells [x, y - 1].Type == CellType.Wall && Cells [x + 1, y].Type == CellType.Wall) {
+					ok = true;
+				}
+				break;
+			case Direction.Southwest:
+				if (Contains (x, y - 1) && Contains (x - 1, y) && Cells [x, y - 1].Type == CellType.Wall && Cells [x - 1, y].Type == CellType.Wall) {
+					ok = true;
+				}
+				break;
+			default:
+				break;
+			}
+		}
+		return new Address (x, y);
+	}
+	
+	public bool IsListPassable (List<Address> locs)
+	{
+		bool ok = true;
+		foreach (Address loc in locs) {
+			if (!Contains (loc.x, loc.y) || Cells [loc.x, loc.y].Type != CellType.Floor || !Cells [loc.x, loc.y].Passable) {
+				return false;
+			}
+		}
+		return ok;
+	}
+	
 	public bool IsOpenAreaCenter (Address loc)
 	{
 		int x = loc.x;
 		int y = loc.y;
 		bool ok = true;
+		List<Address> locs = new List<Address> ();
 		for (int xo = -1; xo<=1; xo++) {
 			for (int yo = -1; yo<=1; yo++) {
-				if (!Contains (x + xo, y + yo) || Cells [x + xo, y + yo].Type != CellType.Floor || !Cells [x + xo, y + yo].Passable) {
-					ok = false;
-				}
+				locs.Add (new Address (x + xo, y + yo));
 			}
 		}
-		return ok;
+		return IsListPassable (locs);
 	}
 	
 	public Address GetRandomOpenArea ()

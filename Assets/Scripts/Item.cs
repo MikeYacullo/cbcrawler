@@ -45,6 +45,29 @@ public class ItemChest:ItemDecorBlocking
 	}
 }
 
+public class ItemWeb:ItemDecor
+{
+	public ItemWeb (Map.Direction dir)
+	{
+		switch (dir) {
+		case Map.Direction.Northeast:
+			SpriteName = "webNE";
+			break;
+		case Map.Direction.Northwest:
+			SpriteName = "webNW";
+			break;
+		case Map.Direction.Southeast:
+			SpriteName = "webSE";
+			break;
+		case Map.Direction.Southwest:
+			SpriteName = "webSW";
+			break;
+		default:
+			break;
+		}
+	}
+}
+
 public class ItemEquippable:Item
 {
 	public ItemSlotType EquipSlot;

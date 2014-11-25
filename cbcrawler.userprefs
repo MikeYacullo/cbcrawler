@@ -1,18 +1,19 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Map.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/GameController.cs">
     <Files>
-      <File FileName="Assets/Scripts/Map.cs" Line="95" Column="30" />
+      <File FileName="Assets/Scripts/Map.cs" Line="108" Column="45" />
       <File FileName="Assets/Scripts/Item.cs" Line="43" Column="30" />
-      <File FileName="Assets/Scripts/GameController.cs" Line="269" Column="22" />
+      <File FileName="Assets/Scripts/GameController.cs" Line="639" Column="6" />
+      <File FileName="Assets/Scripts/InventoryController.cs" Line="16" Column="20" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
-      <Breakpoint file="/Users/Mike/Dropbox/Unity/Projects/cbcrawler/Assets/Scripts/GameController.cs" line="122" />
       <Breakpoint file="/Users/Mike/Dropbox/Unity/Projects/cbcrawler/Assets/Scripts/AStar.cs" line="107" />
       <Breakpoint file="/Users/Mike/Dropbox/Unity/Projects/cbcrawler/Assets/Scripts/AStar.cs" line="127" />
       <Breakpoint file="/Users/Mike/Dropbox/Unity/Projects/cbcrawler/Assets/Scripts/AStar.cs" line="153" />
+      <Breakpoint file="/Users/Mike/Dropbox/Unity/Projects/cbcrawler/Assets/Scripts/GameController.cs" line="270" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
