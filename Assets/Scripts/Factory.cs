@@ -7,11 +7,10 @@ public static class Factory
 
 	public enum EnemyType
 	{
-		Bat
-	,
-		GreenSlime
-	,
-		Spider	
+		Bat,
+		GreenSlime,
+		Spider,
+		Mimic
 	}
 	
 	public enum ItemType
@@ -121,11 +120,8 @@ public static class Factory
 	{
 		List<EnemyType> enemies = new List<EnemyType> ();
 		switch (level) {
-		case 0:
-			enemies = new List<EnemyType>{EnemyType.Bat,EnemyType.Spider,EnemyType.GreenSlime};
-			break;
 		default:
-			enemies = new List<EnemyType>{EnemyType.Bat};
+			enemies = new List<EnemyType>{EnemyType.Bat,EnemyType.Spider,EnemyType.GreenSlime};
 			break;
 		}
 		EnemyType type = enemies [Random.Range (0, enemies.Count)];
@@ -141,6 +137,9 @@ public static class Factory
 			break;
 		case EnemyType.GreenSlime:
 			enemy = NewGreenSlime ();
+			break;
+		case EnemyType.Mimic:
+			enemy = NewMimic ();
 			break;
 		case EnemyType.Spider:
 			enemy = NewSpider ();
@@ -173,6 +172,19 @@ public static class Factory
 		Enemy enemy = new Enemy ();
 		enemy.Name = "Green Slime";
 		enemy.SpriteName = "greenslime";
+		enemy.Stats.MaxHealth = 5;
+		enemy.Stats.CurrentHealth = enemy.Stats.MaxHealth;
+		enemy.Stats.AttackPower = 1;
+		enemy.Stats.DefensePower = 1;
+		enemy.Stats.AttackMaxDamage = 1;
+		return enemy;
+	}
+	
+	public static Enemy NewMimic ()
+	{
+		Enemy enemy = new Enemy ();
+		enemy.Name = "Mimic";
+		enemy.SpriteName = "mimic";
 		enemy.Stats.MaxHealth = 5;
 		enemy.Stats.CurrentHealth = enemy.Stats.MaxHealth;
 		enemy.Stats.AttackPower = 1;

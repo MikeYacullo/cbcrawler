@@ -108,11 +108,15 @@ public class GameController : MonoBehaviour
 	int TILE_FOW_VIS50;
 	int TILE_FOW_VIS100;
 	
+	//z levels
 	int Z_TERRAIN = 4;
 	int Z_DECOR = 3;
 	int Z_ITEMS = 2;
 	int Z_ACTORS = 1;
 	int Z_FOW = 0;
+	
+	//chance in 100
+	int CHANCE_CHEST_IS_MIMIC = 90;
 	
 	void Start ()
 	{
@@ -376,6 +380,7 @@ public class GameController : MonoBehaviour
 	{
 		if (levelEnemies [currentLevel] != null) {
 			enemies = levelEnemies [currentLevel];
+			MakeEnemySprites ();
 		} else {
 			enemies = new List<Enemy> ();
 			for (int i=0; i<ENEMIES_PER_LEVEL_COUNT; i++) {
@@ -385,10 +390,9 @@ public class GameController : MonoBehaviour
 				if (UnityEngine.Random.Range (0, 100) <= 80) {
 					enemy.Loot = Factory.GetItemForLevel (currentLevel);
 				}
-				enemies.Add (enemy);
+				AddEnemy (enemy);
 			}
 		}
-		MakeEnemySprites ();
 	}	
 	
 	void MakeEnemySprites ()
@@ -401,6 +405,22 @@ public class GameController : MonoBehaviour
 			MoveGameObjectToZLevel (enemySprite, Z_ACTORS);
 			enemySprites.Add (enemySprite);	
 		}
+	}
+	
+	void AddEnemy (Enemy enemy)
+	{
+		enemies.Add (enemy);
+		AddEnemySprite (enemy);
+	}
+	
+	void AddEnemySprite (Enemy enemy)
+	{
+		GameObject enemySprite = new GameObject ();
+		SpriteRenderer sr = enemySprite.AddComponent<SpriteRenderer> ();
+		sr.sprite = FindSpriteInTextures (enemy.SpriteName, texturesNPC);
+		MoveSpriteTo (enemySprite, enemy.Location.x, enemy.Location.y);
+		MoveGameObjectToZLevel (enemySprite, Z_ACTORS);
+		enemySprites.Add (enemySprite);
 	}
 	
 	void RemoveEnemy (int enemyIndex)
@@ -591,11 +611,11 @@ public class GameController : MonoBehaviour
 	{
 		AStar.Node nextStep;
 		nextStep = pathPC.Pop ();
+		tileMapFOW [nextStep.x, nextStep.y] = TILE_FOW_VIS100;
 		if (nextStep == null || !map.Cells [nextStep.x, nextStep.y].Passable) {
 			//no more steps or path blocked
 			ClearPCPath ();
 		} else {
-			tileMapFOW [nextStep.x, nextStep.y] = TILE_FOW_VIS100;
 			TryMovePlayerTo (new Address (nextStep.x, nextStep.y));
 			if (pathPC.Count == 0) {
 				pcIsPathfinding = false;
@@ -776,29 +796,35 @@ public class GameController : MonoBehaviour
 			int itemIndex = ItemAt (new Address (newX, newY));
 			if (itemIndex != -1 && items [itemIndex] is ItemChest) {
 				ItemChest chest = (ItemChest)items [itemIndex];
-				if (chest.State == ItemChest.ChestState.Closed) {
-					
+				if (chest.State == ItemChest.ChestState.Closed && UnityEngine.Random.Range (1, 101) < CHANCE_CHEST_IS_MIMIC) {
+					//create mimic
+					Enemy mimic = Factory.NewMimic ();
+					mimic.Location = chest.Location;
+					AddEnemy (mimic);
+					//remove chest
+					RemoveItem (itemIndex);
+				} else {
+					switch (chest.State) {
+					case ItemChest.ChestState.Closed:
+						chest.SpriteName = "chestopen";
+						chest.State = ItemChest.ChestState.Open;
+						audio.PlayOneShot (audioChestOpen, VOLUME);
+						break;
+					case ItemChest.ChestState.Open:
+						chest.SpriteName = "chestempty";
+						//generate loot
+						Item loot = Factory.GetItemForLevel (currentLevel);
+						loot.Location = new Address (pc.Location.x, pc.Location.y);
+						AddItem (loot);
+						GetLoot (pc.Location);
+						chest.State = ItemChest.ChestState.Empty;
+						break;
+					default:
+						break;
+					}
+					Sprite newSprite = FindSpriteInTextures (chest.SpriteName, texturesItemDecor);
+					SetSprite (itemSprites [itemIndex], newSprite);
 				}
-				switch (chest.State) {
-				case ItemChest.ChestState.Closed:
-					chest.SpriteName = "chestopen";
-					chest.State = ItemChest.ChestState.Open;
-					audio.PlayOneShot (audioChestOpen, VOLUME);
-					break;
-				case ItemChest.ChestState.Open:
-					chest.SpriteName = "chestempty";
-					//generate loot
-					Item loot = Factory.GetItemForLevel (currentLevel);
-					loot.Location = new Address (pc.Location.x, pc.Location.y);
-					AddItem (loot);
-					GetLoot (pc.Location);
-					chest.State = ItemChest.ChestState.Empty;
-					break;
-				default:
-					break;
-				}
-				Sprite newSprite = FindSpriteInTextures (chest.SpriteName, texturesItemDecor);
-				SetSprite (itemSprites [itemIndex], newSprite);
 			}
 			//combat?
 			//does the square contain an enemy?
@@ -945,7 +971,9 @@ public class GameController : MonoBehaviour
 		foreach (Address a in vTiles) {
 			//if (!map.Cells [a.x, a.y].Visited) {
 			map.Cells [a.x, a.y].Visited = true;
-			tileMapFOW [a.x, a.y] = TILE_FOW_VIS100;
+			if (tileMapFOW [a.x, a.y] == TILE_FOW_VIS0) {
+				tileMapFOW [a.x, a.y] = TILE_FOW_VIS100;
+			}
 			//}
 		}
 	}
