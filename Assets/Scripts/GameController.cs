@@ -116,7 +116,8 @@ public class GameController : MonoBehaviour
 	int Z_FOW = 0;
 	
 	//chance in 100
-	int CHANCE_CHEST_IS_MIMIC = 90;
+	int CHANCE_CHEST_IS_MIMIC = 10;
+	int CHANCE_ENEMY_DROPS_LOOT = 80;
 	
 	void Start ()
 	{
@@ -191,8 +192,7 @@ public class GameController : MonoBehaviour
 	
 	Sprite FindSpriteInTextures (string spriteName, Sprite[] textures)
 	{
-		string[] names = new string[textures.Length];
-		for (int i=0; i<names.Length; i++) {
+		for (int i=0; i<textures.Length; i++) {
 			if (textures [i].name == spriteName) {
 				return textures [i];
 			} 
@@ -387,7 +387,7 @@ public class GameController : MonoBehaviour
 				Enemy enemy = Factory.GetEnemyForLevel (currentLevel);
 				enemy.Location = map.GetRandomCell (true);
 				map.Cells [enemy.Location.x, enemy.Location.y].Passable = false;
-				if (UnityEngine.Random.Range (0, 100) <= 80) {
+				if (D100 () <= CHANCE_ENEMY_DROPS_LOOT) {
 					enemy.Loot = Factory.GetItemForLevel (currentLevel);
 				}
 				AddEnemy (enemy);
@@ -796,7 +796,7 @@ public class GameController : MonoBehaviour
 			int itemIndex = ItemAt (new Address (newX, newY));
 			if (itemIndex != -1 && items [itemIndex] is ItemChest) {
 				ItemChest chest = (ItemChest)items [itemIndex];
-				if (chest.State == ItemChest.ChestState.Closed && UnityEngine.Random.Range (1, 101) < CHANCE_CHEST_IS_MIMIC) {
+				if (chest.State == ItemChest.ChestState.Closed && D100 () < CHANCE_CHEST_IS_MIMIC) {
 					//create mimic
 					Enemy mimic = Factory.NewMimic ();
 					mimic.Location = chest.Location;
@@ -992,7 +992,10 @@ public class GameController : MonoBehaviour
 		gameState = GameState.TurnPlayer;
 	}
 
-	
+	public int D100 ()
+	{
+		return UnityEngine.Random.Range (1, 101);
+	}
 	
 	
 }

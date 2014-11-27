@@ -18,7 +18,7 @@
 				width: 960, 
 				height: 600,
 				params: { enableDebugging:"0" }
-				,baseDownloadUrl: "http://webplayer.unity3d.com/download_webplayer-3.x/"
+				
 			};
 			var u = new UnityObject2(config);
 
@@ -56,7 +56,7 @@
 						break;
 					}
 				});
-				u.initPlugin(jQuery("#unityPlayer")[0], "Roguesque.unity3d");
+				u.initPlugin(jQuery("#unityPlayer")[0], "cbcrawler.unity3d");
 			});
 		-->
 		</script>
@@ -117,7 +117,6 @@
 	</head>
 	<body>
 		<p class="header"><span>Unity Web Player | </span>2dtkrl</p>
-		<p style="color: #c00; font-size: small; font-style: italic;">Built with beta version of Unity. Will only work on your computer!</p>
 		<div class="content">
 			<div id="unityPlayer">
 				<div class="missing">

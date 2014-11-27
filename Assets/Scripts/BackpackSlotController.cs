@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections;
-using UnityEditor;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
@@ -11,18 +10,22 @@ public class BackpackSlotController : MonoBehaviour
 	public Image itemImage;
 	
 	Sprite[] textures;
-	string[] names;
+
+	Sprite FindSpriteInTextures (string spriteName)
+	{
+		for (int i=0; i<textures.Length; i++) {
+			if (textures [i].name == spriteName) {
+				return textures [i];
+			} 
+		}
+		return null;
+	}
 
 	// Use this for initialization
 	void Start ()
 	{
 		itemImage = gameObject.transform.GetChild (0).GetComponent<Image> ();
 		textures = Resources.LoadAll<Sprite> ("Textures/Item");
-		names = new string[textures.Length];
-		
-		for (int ii=0; ii< names.Length; ii++) {
-			names [ii] = textures [ii].name;
-		}
 		
 	}
 	
@@ -31,7 +34,7 @@ public class BackpackSlotController : MonoBehaviour
 	{
 		if (item != null) {
 			itemImage.enabled = true;
-			itemImage.sprite = textures [ArrayUtility.IndexOf (names, item.SpriteName)];
+			itemImage.sprite = FindSpriteInTextures (item.SpriteName);
 		} else {
 			itemImage.enabled = false;
 		}

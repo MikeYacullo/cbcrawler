@@ -310,6 +310,10 @@ TextureImporter:
     21300610: itematlas_305
     21300612: itematlas_306
     21300614: itematlas_307
+    21300616: bag
+    21300618: itematlas_74
+    21300620: itematlas_75
+    21300622: dagger
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -374,9 +378,9 @@ TextureImporter:
     - name: potionred_s
       rect:
         serializedVersion: 2
-        x: 35
+        x: 32
         y: 208
-        width: 9
+        width: 16
         height: 16
       alignment: 0
       pivot: {x: .5, y: .5}
@@ -1091,7 +1095,7 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: gold
+    - name: itematlas_74
       rect:
         serializedVersion: 2
         x: 128
@@ -1101,7 +1105,7 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: ring
+    - name: itematlas_75
       rect:
         serializedVersion: 2
         x: 144
