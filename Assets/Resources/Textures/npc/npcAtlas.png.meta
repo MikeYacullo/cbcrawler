@@ -218,11 +218,11 @@ TextureImporter:
     21300426: enemyatlas_213
     21300428: enemyatlas_214
     21300430: enemyatlas_215
-    21300432: enemyatlas_216
-    21300434: enemyatlas_217
-    21300436: enemyatlas_218
-    21300438: enemyatlas_219
-    21300440: enemyatlas_220
+    21300432: goblinfighter
+    21300434: goblinhunter
+    21300436: goblinrogue
+    21300438: goblincleric
+    21300440: goblinwizard
     21300442: enemyatlas_221
     21300444: enemyatlas_222
     21300446: enemyatlas_223
@@ -2563,27 +2563,27 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: enemyatlas_216
+    - name: goblinfighter
       rect:
         serializedVersion: 2
-        x: 0
+        x: 1
         y: 168
-        width: 24
-        height: 24
+        width: 22
+        height: 21
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: enemyatlas_217
+    - name: goblinhunter
       rect:
         serializedVersion: 2
         x: 24
         y: 168
-        width: 24
-        height: 24
+        width: 23
+        height: 21
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: enemyatlas_218
+    - name: goblinrogue
       rect:
         serializedVersion: 2
         x: 48
@@ -2593,7 +2593,7 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: enemyatlas_219
+    - name: goblincleric
       rect:
         serializedVersion: 2
         x: 72
@@ -2603,7 +2603,7 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: enemyatlas_220
+    - name: goblinwizard
       rect:
         serializedVersion: 2
         x: 96
