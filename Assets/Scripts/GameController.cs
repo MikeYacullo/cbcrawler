@@ -665,11 +665,11 @@ public class GameController : MonoBehaviour
 		bool cheats = true;
 		if (cheats) {
 		
-			if (Input.GetKeyDown (KeyCode.X)) {
+			if (Input.GetKey (KeyCode.X)) {
 				TryMovePlayerTo (map.exitLocation);
 			}
 			
-			if (Input.GetKeyDown (KeyCode.N)) {
+			if (Input.GetKey (KeyCode.N)) {
 				TryMovePlayerTo (map.entranceLocation);
 			}
 		
@@ -692,14 +692,14 @@ public class GameController : MonoBehaviour
 			}
 		}
 		
-		if (Input.GetKeyDown (KeyCode.RightBracket) && camera.orthographicSize >= 0.0) {
+		if (Input.GetKey (KeyCode.RightBracket) && camera.orthographicSize >= 0.0) {
 			camera.orthographicSize -= 1.0f; 
 		}
-		if (Input.GetKeyDown (KeyCode.LeftBracket) && camera.orthographicSize <= 15.0) {
+		if (Input.GetKey (KeyCode.LeftBracket) && camera.orthographicSize <= 15.0) {
 			camera.orthographicSize += 1.0f;
 		}
 		
-		if (Input.GetKeyDown (KeyCode.I)) {
+		if (Input.GetKey (KeyCode.I)) {
 			ShowInventory ();
 		}
 		bool isMoving = false;
