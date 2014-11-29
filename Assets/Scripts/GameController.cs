@@ -681,6 +681,11 @@ public class GameController : MonoBehaviour
 			Vector2Int tileClicked = new Vector2Int ((int)ray.origin.x, (int)ray.origin.y);
 			Map.Cell cell = map.Cells [tileClicked.x, tileClicked.y];
 			//Debug.Log (tileClicked.x + "," + tileClicked.y);
+			//is there a monster there?
+			int enemyIndex = EnemyAt (new Address (tileClicked.x, tileClicked.y));
+			if (cell.Visited && enemyIndex != -1) {
+				RangedCombatCheck (pc, enemies [enemyIndex]);
+			}
 			if (cell.Visited && cell.Passable) {
 				//find a path to that cell
 				AStar astar = new AStar (map);
@@ -859,6 +864,36 @@ public class GameController : MonoBehaviour
 		map.pcLocation = newLocation;
 		GetLoot (newLocation);
 		SeeTilesFlood ();
+	}
+	
+	private bool IsClearShot (Address origin, Address destination)
+	{
+		List<Address> locs = map.CastRay (origin.x, origin.y, destination.x, destination.y);
+		//Debug.Log (locs.Count + " cells.");
+		//foreach (Address loc in locs) {
+		//	tileMapFOW [loc.x, loc.y] = TILE_FOW_VIS50;
+		//}
+		if (locs.Count > 0) {
+			Address endLoc = locs [locs.Count];
+			if (endLoc.x == destination.x && endLoc.y == destination.y) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
+	}
+	
+	private void RangedCombatCheck (Actor attacker, Actor defender)
+	{
+		if (IsClearShot (attacker.Location, defender.Location)) {
+			//erm ???
+			//animate projectile shot somehow
+		} else {
+			// play wah wah sound
+			Debug.Log ("no clear shot");
+		}
 	}
 	
 	private void CombatCheck (Actor attacker, Actor defender)

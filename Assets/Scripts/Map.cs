@@ -253,6 +253,64 @@ public class Map
 		return result;
 	}
 	
+	public List<Address> CastRay (int x0, int y0, int x1, int y1)
+	{
+		//cast a ray until you hit the target, the edge of the map, or something impassible
+		List<Address> result = new List<Address> ();
+		
+		bool steep = false;
+		if (Mathf.Abs (y1 - y0) > Mathf.Abs (x1 - x0))
+			steep = true;
+		
+		int deltax = Mathf.Abs (x1 - x0);
+		int deltay = Mathf.Abs (y1 - y0);
+		int error = 0;
+		int ystep;
+		int xstep;
+		int x = x0;
+		int y = y0;
+		if (x0 < x1)
+			xstep = 1;
+		else
+			xstep = -1;
+		if (y0 < y1)
+			ystep = 1;
+		else
+			ystep = -1;
+		
+		if (!steep) {
+			for (int i = 0; i <= deltax; i++) {
+				if (Contains (x, y) == false)
+					return result;
+				result.Add (new Address (x, y));
+				if (!Cells [x, y].Passable && (x != x0 || y != y0))
+					return result;
+				x += xstep;
+				error += deltay;
+				if (2 * error >= deltax) {
+					y += ystep;
+					error -= deltax;
+				}
+			}
+		} else {
+			for (int i = 0; i <= deltay; i++) {
+				if (Contains (x, y) == false)
+					return result;
+				result.Add (new Address (x, y));
+				if (!Cells [x, y].Passable && (x != x0 || y != y0))
+					return result;
+				y += ystep;
+				error += deltax;
+				if (2 * error >= deltay) {
+					x += xstep;
+					error -= deltay;
+				}
+			}
+		}
+		
+		return result;
+	}
+	
 	private void MakeDungeon ()
 	{		
 		Generator_Dungeon.SetGenericProperties (Width, Height, "Stone Dungeon Theme");
