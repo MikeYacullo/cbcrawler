@@ -109,11 +109,15 @@ public class GameController : MonoBehaviour
 	int TILE_FOW_VIS100;
 	
 	//z levels
-	int Z_TERRAIN = 4;
-	int Z_DECOR = 3;
-	int Z_ITEMS = 2;
-	int Z_ACTORS = 1;
+	int Z_TERRAIN = 8;
+	int Z_DECOR = 6;
+	int Z_ITEMS = 4;
+	int Z_PROJECTILE = 3;
+	int Z_ACTORS = 2;
 	int Z_FOW = 0;
+	
+	GameObject spriteProjectile;
+	float PROJECTILE_SECONDS_PER_TILE = 0.1f;
 	
 	//chance in 100
 	int CHANCE_CHEST_IS_MIMIC = 10;
@@ -158,6 +162,8 @@ public class GameController : MonoBehaviour
 		health3 = GameObject.Find ("health3").GetComponent<UnityEngine.UI.Image> ();
 		health4 = GameObject.Find ("health4").GetComponent<UnityEngine.UI.Image> ();
 		levels = new Map[LEVEL_COUNT];
+		
+		spriteProjectile = GameObject.Find ("SpriteProjectile");
 		
 		InitTextures ();
 		
@@ -549,7 +555,7 @@ public class GameController : MonoBehaviour
 	
 	public IEnumerator WaitForSecondsThenExecute (float waitTime, Action method)
 	{
-		yield return new  WaitForSeconds (waitTime);
+		yield return new WaitForSeconds (waitTime);
 		method ();
 	}
 	
@@ -870,11 +876,11 @@ public class GameController : MonoBehaviour
 	{
 		List<Address> locs = map.CastRay (origin.x, origin.y, destination.x, destination.y);
 		//Debug.Log (locs.Count + " cells.");
-		//foreach (Address loc in locs) {
-		//	tileMapFOW [loc.x, loc.y] = TILE_FOW_VIS50;
-		//}
+		foreach (Address loc in locs) {
+			tileMapFOW [loc.x, loc.y] = TILE_FOW_VIS50;
+		}
 		if (locs.Count > 0) {
-			Address endLoc = locs [locs.Count];
+			Address endLoc = locs [locs.Count - 1];
 			if (endLoc.x == destination.x && endLoc.y == destination.y) {
 				return true;
 			} else {
@@ -885,11 +891,31 @@ public class GameController : MonoBehaviour
 		}
 	}
 	
+	IEnumerator MoveProjectile (Address originTile, Address targetTile)
+	{	
+	
+		float moveDuration = map.Distance (originTile, targetTile) * PROJECTILE_SECONDS_PER_TILE;
+		
+		//get screen coordinates of origin and target
+		Rect rectOrigin = tileMapTerrain.GetTileBoundsLocal (originTile.x, originTile.y);
+		Rect rectTarget = tileMapTerrain.GetTileBoundsLocal (targetTile.x, targetTile.y);
+		
+		// store the starting position of the object this script is attached to as well as the target position
+		Vector3 oldPos = new Vector3 (rectOrigin.center.x, rectOrigin.center.y, Z_PROJECTILE);
+		Vector3 newPos = new Vector3 (rectTarget.center.x, rectTarget.center.y, Z_PROJECTILE);
+		float moveTime = 0.0f;
+		
+		while (moveTime < moveDuration) {
+			moveTime += Time.deltaTime;
+			spriteProjectile.transform.position = Vector3.Lerp (oldPos, newPos, moveTime / moveDuration);
+			yield return null;
+		}
+	}
+	
 	private void RangedCombatCheck (Actor attacker, Actor defender)
 	{
 		if (IsClearShot (attacker.Location, defender.Location)) {
-			//erm ???
-			//animate projectile shot somehow
+			StartCoroutine (MoveProjectile (attacker.Location, defender.Location));
 		} else {
 			// play wah wah sound
 			Debug.Log ("no clear shot");

@@ -163,10 +163,14 @@ public class Map
 		return address;
 	}
 	
+	public float Distance (Address fromLocation, Address toLocation)
+	{
+		return (float)Math.Sqrt (Math.Pow ((fromLocation.x - toLocation.x), 2) + Math.Pow ((fromLocation.y - toLocation.y), 2));
+	}
 	
 	public float DistanceToPlayer (Address fromLocation)
 	{
-		return (float)Math.Sqrt (Math.Pow ((fromLocation.x - pcLocation.x), 2) + Math.Pow ((fromLocation.y - pcLocation.y), 2));
+		return Distance (fromLocation, pcLocation);
 	}
 	
 	public List<Address> findVisibleCellsFlood (Address position, int range)
