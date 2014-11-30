@@ -703,11 +703,11 @@ public class GameController : MonoBehaviour
 			}
 		}
 		
-		if (Input.GetKey (KeyCode.RightBracket) && camera.orthographicSize >= 0.0) {
-			camera.orthographicSize -= 1.0f; 
+		if (Input.GetKey (KeyCode.RightBracket) && camera.orthographicSize > 1.0) {
+			camera.orthographicSize -= 0.5f; 
 		}
 		if (Input.GetKey (KeyCode.LeftBracket) && camera.orthographicSize <= 15.0) {
-			camera.orthographicSize += 1.0f;
+			camera.orthographicSize += 0.5f;
 		}
 		
 		if (Input.GetKey (KeyCode.I)) {
