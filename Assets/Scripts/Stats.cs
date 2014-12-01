@@ -11,6 +11,7 @@ public class Stats
 	public int DefensePower = 0;
 	public int AttackMaxDamage = 0;
 	
+	
 	public Stats ()
 	{
 	

@@ -25,18 +25,12 @@ public class GameController : MonoBehaviour
 	
 	private enum GameState
 	{
-		Initializing
-		,
-		Inventory
-		,
-		LevelTransition
-		,
-		TurnPlayer
-		,
-		TurnEnemyInProgress
-		,
-		TurnEnemy
-		,
+		Initializing,
+		Inventory,
+		LevelTransition,
+		TurnPlayer,
+		TurnEnemyInProgress,
+		TurnEnemy,
 		PlayerDeath
 	}
 	
@@ -889,6 +883,31 @@ public class GameController : MonoBehaviour
 		} else {
 			return false;
 		}
+	}
+	
+	private bool IsClearPath (Address origin, Address destination)
+	{
+		float distance = map.Distance (origin, destination);
+		Vector2 oldPos = new Vector2 (origin.x, origin.y);
+		Vector2 newPos = new Vector2 (destination.x, destination.y);
+		Vector2 testPos;
+		float testDistance = 1.0f;
+		while (testDistance < distance) {
+			testPos = Vector2.Lerp (oldPos, newPos, testDistance / distance);
+			Debug.Log ("testPos: " + testPos.x + "," + testPos.y);
+			int testX = (int)Math.Ceiling (testPos.x);
+			int testY = (int)Math.Ceiling (testPos.y);
+			Debug.Log ("  rounded: " + testX + "," + testY);
+			tileMapFOW [testX, testY] = TILE_FOW_VIS50;
+			if (testPos.x == destination.x && testPos.y == destination.y) {
+				return true;
+			}
+			if (!map.Contains (new Address (testX, testY)) || !map.Cells [testX, testY].Passable) {
+				return false;
+			}
+			testDistance++;
+		}
+		return true;
 	}
 	
 	IEnumerator MoveProjectile (Address originTile, Address targetTile)
