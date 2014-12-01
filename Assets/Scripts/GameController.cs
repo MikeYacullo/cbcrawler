@@ -158,6 +158,7 @@ public class GameController : MonoBehaviour
 		levels = new Map[LEVEL_COUNT];
 		
 		spriteProjectile = GameObject.Find ("SpriteProjectile");
+		spriteProjectile.SetActive (false);
 		
 		InitTextures ();
 		
@@ -866,53 +867,45 @@ public class GameController : MonoBehaviour
 		SeeTilesFlood ();
 	}
 	
-	private bool IsClearShot (Address origin, Address destination)
+	private bool IsClearPath (Address originTile, Address targetTile)
 	{
-		List<Address> locs = map.CastRay (origin.x, origin.y, destination.x, destination.y);
-		//Debug.Log (locs.Count + " cells.");
-		foreach (Address loc in locs) {
-			tileMapFOW [loc.x, loc.y] = TILE_FOW_VIS50;
-		}
-		if (locs.Count > 0) {
-			Address endLoc = locs [locs.Count - 1];
-			if (endLoc.x == destination.x && endLoc.y == destination.y) {
-				return true;
-			} else {
-				return false;
-			}
-		} else {
-			return false;
-		}
-	}
-	
-	private bool IsClearPath (Address origin, Address destination)
-	{
-		float distance = map.Distance (origin, destination);
-		Vector2 oldPos = new Vector2 (origin.x, origin.y);
-		Vector2 newPos = new Vector2 (destination.x, destination.y);
-		Vector2 testPos;
-		float testDistance = 1.0f;
+		float distance = map.Distance (originTile, targetTile);
+		//get screen coordinates of origin and target
+		Rect rectOrigin = tileMapTerrain.GetTileBoundsLocal (originTile.x, originTile.y);
+		Rect rectTarget = tileMapTerrain.GetTileBoundsLocal (targetTile.x, targetTile.y);
+		
+		// store the starting position of the object this script is attached to as well as the target position
+		Vector3 oldPos = new Vector3 (rectOrigin.center.x, rectOrigin.center.y, 0);
+		Vector3 newPos = new Vector3 (rectTarget.center.x, rectTarget.center.y, 0);
+		
+		Vector3 testPos;
+		
+		float testDistance = 0.0f;
+		float testIncrement = 0.5f;
 		while (testDistance < distance) {
-			testPos = Vector2.Lerp (oldPos, newPos, testDistance / distance);
+			testPos = Vector3.Lerp (oldPos, newPos, testDistance / distance);
+			Debug.Log ("PC Location: " + pc.Location.x + "," + pc.Location.y);
 			Debug.Log ("testPos: " + testPos.x + "," + testPos.y);
-			int testX = (int)Math.Ceiling (testPos.x);
-			int testY = (int)Math.Ceiling (testPos.y);
-			Debug.Log ("  rounded: " + testX + "," + testY);
-			tileMapFOW [testX, testY] = TILE_FOW_VIS50;
-			if (testPos.x == destination.x && testPos.y == destination.y) {
-				return true;
+			int testX = (int)testPos.x;
+			int testY = (int)testPos.y;
+			Debug.Log ("  to tile: " + testX + "," + testY);
+			if (testX != originTile.x && testY != originTile.y) {
+				tileMapFOW [testX, testY] = TILE_FOW_VIS50;
+				if (testX == targetTile.x && testY == targetTile.y) {
+					return true;
+				}
+				if (!map.Contains (new Address (testX, testY)) || !map.Cells [testX, testY].Passable) {
+					return false;
+				}
 			}
-			if (!map.Contains (new Address (testX, testY)) || !map.Cells [testX, testY].Passable) {
-				return false;
-			}
-			testDistance++;
+			testDistance = testDistance + testIncrement;
 		}
 		return true;
 	}
 	
 	IEnumerator MoveProjectile (Address originTile, Address targetTile)
 	{	
-	
+		spriteProjectile.SetActive (true);
 		float moveDuration = map.Distance (originTile, targetTile) * PROJECTILE_SECONDS_PER_TILE;
 		
 		//get screen coordinates of origin and target
@@ -926,14 +919,28 @@ public class GameController : MonoBehaviour
 		
 		while (moveTime < moveDuration) {
 			moveTime += Time.deltaTime;
-			spriteProjectile.transform.position = Vector3.Lerp (oldPos, newPos, moveTime / moveDuration);
+			Vector3 curPos = Vector3.Lerp (oldPos, newPos, moveTime / moveDuration);
+			spriteProjectile.transform.position = curPos;
+			int curX = (int)curPos.x;
+			int curY = (int)curPos.y;
+			if (curX != originTile.x && curY != originTile.y) {
+				if (!map.Cells [(int)curPos.x, (int)curPos.y].Passable) {
+					spriteProjectile.SetActive (false);
+					//figure out what we hit
+					
+					break;
+				}
+			}
 			yield return null;
 		}
+		spriteProjectile.SetActive (false);
 	}
 	
 	private void RangedCombatCheck (Actor attacker, Actor defender)
 	{
-		if (IsClearShot (attacker.Location, defender.Location)) {
+		//removed check, let the arrow fly!
+		//if (IsClearPath (attacker.Location, defender.Location)) {
+		if (true) {
 			StartCoroutine (MoveProjectile (attacker.Location, defender.Location));
 		} else {
 			// play wah wah sound
