@@ -29,8 +29,9 @@ public class GameController : MonoBehaviour
 		Inventory,
 		LevelTransition,
 		TurnPlayer,
-		TurnEnemyInProgress,
+		TurnPlayerInProgress,
 		TurnEnemy,
+		TurnEnemyInProgress,
 		PlayerDeath
 	}
 	
@@ -70,6 +71,8 @@ public class GameController : MonoBehaviour
 	public AudioClip audioDieEnemy;
 	public AudioClip audioLoot;
 	public AudioClip audioChestOpen;
+	public AudioClip audioShotBow;
+	public AudioClip audioShotMiss;
 	
 	private List<Enemy> enemies = new List<Enemy> ();
 	private List<GameObject> enemySprites = new List<GameObject> ();
@@ -625,6 +628,15 @@ public class GameController : MonoBehaviour
 		gameState = GameState.TurnEnemy;
 	}
 	
+	void EndTurnInProgress ()
+	{
+		if (gameState == GameState.TurnPlayerInProgress) {
+			gameState = GameState.TurnEnemy;
+		} else {
+			gameState = GameState.TurnPlayer;
+		}
+	}
+	
 	private void TakePlayerTurn ()
 	{
 		if (pcIsPathfinding) {
@@ -685,6 +697,7 @@ public class GameController : MonoBehaviour
 			//is there a monster there?
 			int enemyIndex = EnemyAt (new Address (tileClicked.x, tileClicked.y));
 			if (cell.Visited && enemyIndex != -1) {
+				gameState = GameState.TurnPlayerInProgress;
 				RangedCombatCheck (pc, enemies [enemyIndex]);
 			}
 			if (cell.Visited && cell.Passable) {
@@ -927,13 +940,19 @@ public class GameController : MonoBehaviour
 				if (!map.Cells [(int)curPos.x, (int)curPos.y].Passable) {
 					spriteProjectile.SetActive (false);
 					//figure out what we hit
-					
+					int enemyIndex = EnemyAt (new Address (curX, curY));
+					if (enemyIndex == -1) {
+						audio.PlayOneShot (audioShotMiss, VOLUME);
+					} else {
+						audio.PlayOneShot (audioHitEnemy, VOLUME);
+					}		
 					break;
 				}
 			}
 			yield return null;
 		}
 		spriteProjectile.SetActive (false);
+		EndTurnInProgress ();
 	}
 	
 	private void RangedCombatCheck (Actor attacker, Actor defender)
@@ -941,6 +960,7 @@ public class GameController : MonoBehaviour
 		//removed check, let the arrow fly!
 		//if (IsClearPath (attacker.Location, defender.Location)) {
 		if (true) {
+			audio.PlayOneShot (audioShotBow, VOLUME);
 			StartCoroutine (MoveProjectile (attacker.Location, defender.Location));
 		} else {
 			// play wah wah sound
