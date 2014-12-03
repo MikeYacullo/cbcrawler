@@ -660,11 +660,35 @@ public class GameController : MonoBehaviour
 	private void TakeEnemyTurn ()
 	{
 		for (int i=0; i<enemies.Count; i++) {
-			if (map.DistanceToPlayer (enemies [i].Location) == 1) {
-				CombatCheck (enemies [i], pc);
+			Enemy enemy = enemies [i];
+			//flip sprite to face player if necessary
+			if (map.DistanceToPlayer (enemy.Location) < enemy.Stats.VisionRange) {
+				if (enemy.Location.x > pc.Location.x) {
+					enemySprites [i].transform.localScale = new Vector3 (1, 1, 1);
+				} 
+				if (enemy.Location.x < pc.Location.x) {
+					enemySprites [i].transform.localScale = new Vector3 (-1, 1, 1);
+				}
+			}
+			if (map.DistanceToPlayer (enemy.Location) == 1) {
+				CombatCheck (enemy, pc);
 			} else {
-				enemies [i].Move (map);
-				MoveSpriteTo (enemySprites [i], enemies [i].Location.x, enemies [i].Location.y);
+				if (enemy.Stats.HasRangedAttack && map.Distance (enemy.Location, pc.Location) <= enemy.Stats.VisionRange && IsClearPath (enemy.Location, pc.Location)) {
+					RangedCombatCheck (enemy, pc);
+				} else {
+					Address oldLoc = enemy.Location;
+					enemy.Move (map);
+					if (enemy.Location.x != oldLoc.x || enemy.Location.y != oldLoc.y) {
+						//flip moving sprite
+						if (enemy.Location.x > oldLoc.x) {
+							enemySprites [i].transform.localScale = new Vector3 (-1, 1, 1);
+						} 
+						if (enemy.Location.x < oldLoc.x) {
+							enemySprites [i].transform.localScale = new Vector3 (1, 1, 1);
+						} 
+						MoveSpriteTo (enemySprites [i], enemy.Location.x, enemy.Location.y);
+					}
+				}
 			}
 		}
 		UpdateHud ();
@@ -678,11 +702,11 @@ public class GameController : MonoBehaviour
 		bool cheats = true;
 		if (cheats) {
 		
-			if (Input.GetKey (KeyCode.X)) {
+			if (Input.GetKeyDown (KeyCode.X)) {
 				TryMovePlayerTo (map.exitLocation);
 			}
 			
-			if (Input.GetKey (KeyCode.N)) {
+			if (Input.GetKeyDown (KeyCode.N)) {
 				TryMovePlayerTo (map.entranceLocation);
 			}
 		
@@ -697,7 +721,6 @@ public class GameController : MonoBehaviour
 			//is there a monster there?
 			int enemyIndex = EnemyAt (new Address (tileClicked.x, tileClicked.y));
 			if (cell.Visited && enemyIndex != -1) {
-				gameState = GameState.TurnPlayerInProgress;
 				RangedCombatCheck (pc, enemies [enemyIndex]);
 			}
 			if (cell.Visited && cell.Passable) {
@@ -711,28 +734,31 @@ public class GameController : MonoBehaviour
 			}
 		}
 		
-		if (Input.GetKey (KeyCode.RightBracket) && camera.orthographicSize > 1.0) {
+		if (Input.GetKeyDown (KeyCode.RightBracket) && camera.orthographicSize > 1.0) {
 			camera.orthographicSize -= 0.5f; 
 		}
-		if (Input.GetKey (KeyCode.LeftBracket) && camera.orthographicSize <= 15.0) {
+		if (Input.GetKeyDown (KeyCode.LeftBracket) && camera.orthographicSize <= 15.0) {
 			camera.orthographicSize += 0.5f;
 		}
 		
-		if (Input.GetKey (KeyCode.I)) {
+		if (Input.GetKeyDown (KeyCode.P)) {
+			gameState = GameState.TurnEnemy;
+		}
+		if (Input.GetKeyDown (KeyCode.I)) {
 			ShowInventory ();
 		}
 		bool isMoving = false;
 		int newX = pc.Location.x, newY = pc.Location.y;
-		if (Input.GetKey (KeyCode.D) || Input.GetKey (KeyCode.RightArrow)) {
+		if (Input.GetKeyDown (KeyCode.D) || Input.GetKeyDown (KeyCode.RightArrow)) {
 			newX = newX + 1;
 			isMoving = true;
-		} else if (Input.GetKey (KeyCode.A) || Input.GetKey (KeyCode.LeftArrow)) {
+		} else if (Input.GetKeyDown (KeyCode.A) || Input.GetKeyDown (KeyCode.LeftArrow)) {
 			newX = newX - 1;
 			isMoving = true;
-		} else if (Input.GetKey (KeyCode.W) || Input.GetKey (KeyCode.UpArrow)) {
+		} else if (Input.GetKeyDown (KeyCode.W) || Input.GetKeyDown (KeyCode.UpArrow)) {
 			newY = newY + 1;
 			isMoving = true;
-		} else if (Input.GetKey (KeyCode.S) || Input.GetKey (KeyCode.DownArrow)) {
+		} else if (Input.GetKeyDown (KeyCode.S) || Input.GetKeyDown (KeyCode.DownArrow)) {
 			newY = newY - 1;
 			isMoving = true;
 		}
@@ -882,6 +908,9 @@ public class GameController : MonoBehaviour
 	
 	private bool IsClearPath (Address originTile, Address targetTile)
 	{
+	
+		Debug.Log ("IsClearPath: " + originTile.ToString () + " to " + targetTile.ToString ());
+		
 		float distance = map.Distance (originTile, targetTile);
 		//get screen coordinates of origin and target
 		Rect rectOrigin = tileMapTerrain.GetTileBoundsLocal (originTile.x, originTile.y);
@@ -897,17 +926,17 @@ public class GameController : MonoBehaviour
 		float testIncrement = 0.5f;
 		while (testDistance < distance) {
 			testPos = Vector3.Lerp (oldPos, newPos, testDistance / distance);
-			Debug.Log ("PC Location: " + pc.Location.x + "," + pc.Location.y);
-			Debug.Log ("testPos: " + testPos.x + "," + testPos.y);
-			int testX = (int)testPos.x;
-			int testY = (int)testPos.y;
-			Debug.Log ("  to tile: " + testX + "," + testY);
-			if (testX != originTile.x && testY != originTile.y) {
-				tileMapFOW [testX, testY] = TILE_FOW_VIS50;
+			//Debug.Log ("  testPos: " + testPos.x + "," + testPos.y);
+			int testX = (int)(testPos.x);
+			int testY = (int)(testPos.y);
+			//Debug.Log ("    to tile: " + testX + "," + testY + " - which is " + map.Cells [testX, testY].Type.ToString ());
+			if (testX != originTile.x || testY != originTile.y) {
+				//tileMapFOW [testX, testY] = TILE_FOW_VIS50;
 				if (testX == targetTile.x && testY == targetTile.y) {
 					return true;
 				}
-				if (!map.Contains (new Address (testX, testY)) || !map.Cells [testX, testY].Passable) {
+				if (!map.Contains (new Address (testX, testY)) || !map.Cells [testX, testY].Passable || tileMapTerrain [testX, testY] == TILE_DOORCLOSED) {
+					Debug.Log ("clunk");
 					return false;
 				}
 			}
@@ -916,8 +945,12 @@ public class GameController : MonoBehaviour
 		return true;
 	}
 	
-	IEnumerator MoveProjectile (Address originTile, Address targetTile)
+	IEnumerator MoveProjectile (Actor attacker, Actor defender)
 	{	
+	
+		Address originTile = attacker.Location;
+		Address targetTile = defender.Location;
+		
 		spriteProjectile.SetActive (true);
 		float moveDuration = map.Distance (originTile, targetTile) * PROJECTILE_SECONDS_PER_TILE;
 		
@@ -937,15 +970,24 @@ public class GameController : MonoBehaviour
 			int curX = (int)curPos.x;
 			int curY = (int)curPos.y;
 			if (curX != originTile.x && curY != originTile.y) {
-				if (!map.Cells [(int)curPos.x, (int)curPos.y].Passable) {
+				if (!map.Cells [curX, curY].Passable) {
 					spriteProjectile.SetActive (false);
-					//figure out what we hit
-					int enemyIndex = EnemyAt (new Address (curX, curY));
-					if (enemyIndex == -1) {
-						audio.PlayOneShot (audioShotMiss, VOLUME);
+					if (attacker == pc) {
+						//figure out what we hit
+						int enemyIndex = EnemyAt (new Address (curX, curY));
+						if (enemyIndex == -1) {
+							audio.PlayOneShot (audioShotMiss, VOLUME);
+						} else {
+							audio.PlayOneShot (audioHitEnemy, VOLUME);
+						}	
 					} else {
-						audio.PlayOneShot (audioHitEnemy, VOLUME);
-					}		
+						//attacker is an enemy
+						if (pc.Location.x == curX && pc.Location.y == curY) {
+							audio.PlayOneShot (audioHitPlayer, VOLUME);	
+						} else {
+							audio.PlayOneShot (audioShotMiss, VOLUME);
+						}
+					}
 					break;
 				}
 			}
@@ -959,13 +1001,17 @@ public class GameController : MonoBehaviour
 	{
 		//removed check, let the arrow fly!
 		//if (IsClearPath (attacker.Location, defender.Location)) {
-		if (true) {
-			audio.PlayOneShot (audioShotBow, VOLUME);
-			StartCoroutine (MoveProjectile (attacker.Location, defender.Location));
+		if (gameState == GameState.TurnPlayer) {
+			gameState = GameState.TurnPlayerInProgress;
 		} else {
-			// play wah wah sound
-			Debug.Log ("no clear shot");
+			gameState = GameState.TurnEnemyInProgress;
 		}
+		audio.PlayOneShot (audioShotBow, VOLUME);
+		StartCoroutine (MoveProjectile (attacker, defender));
+		//} else {
+		// play wah wah sound
+		//Debug.Log ("no clear shot");
+		//}
 	}
 	
 	private void CombatCheck (Actor attacker, Actor defender)

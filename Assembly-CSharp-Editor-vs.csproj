@@ -47,7 +47,10 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Editor\TileMap\TileMapBehaviourInspector.cs" />
+     <Compile Include="Assets\Imports\Pro-D\Scripts\Editor\RandomSpriteEditor.cs" />
+     <Compile Include="Assets\Imports\Pro-D\Scripts\Editor\RandomTextureEditor.cs" />
      <None Include="Assets\Imports\Pro-D\Pro-D Logo\Pro-D Logo Text.txt" />
+     <None Include="Assets\Imports\ConsolePro\Readme.txt" />
  <Reference Include="Assembly-UnityScript-firstpass">
  <HintPath>/Users/Mike/Dropbox/Unity/Projects/cbcrawler/Library/ScriptAssemblies/Assembly-UnityScript-firstpass.dll</HintPath>
  </Reference>
@@ -59,6 +62,12 @@
  </Reference>
  <Reference Include="UnityEditor.Graphs">
  <HintPath>/Applications/Unity/Unity.app/Contents/Frameworks/Managed/UnityEditor.Graphs.dll</HintPath>
+ </Reference>
+ <Reference Include="ConsolePro.RunTime">
+ <HintPath>/Users/Mike/Dropbox/Unity/Projects/cbcrawler/Assets/Imports/ConsolePro/ConsolePro.RunTime.dll</HintPath>
+ </Reference>
+ <Reference Include="ConsolePro.Editor">
+ <HintPath>/Users/Mike/Dropbox/Unity/Projects/cbcrawler/Assets/Imports/ConsolePro/Editor/ConsolePro.Editor.dll</HintPath>
  </Reference>
   </ItemGroup>
   <ItemGroup>

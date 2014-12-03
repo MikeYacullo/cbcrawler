@@ -319,6 +319,8 @@ public class Map
 	{		
 		Generator_Dungeon.SetGenericProperties (Width, Height, "Stone Dungeon Theme");
 		Dungeon = Generator_Dungeon.Generate ();		
+		//Generator_Castle.SetGenericProperties (Width, Height, "Stone Dungeon Theme");
+		//Dungeon = Generator_Castle.Generate ();
 		for (int h=0; h<Height; h++) {
 			for (int w=0; w<Width; w++) {
 				Cells [w, h] = new Cell ();

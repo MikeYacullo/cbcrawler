@@ -9,8 +9,11 @@ public static class Factory
 	{
 		Bat,
 		GreenSlime,
+		GoblinFighter,
+		GoblinHunter,
 		Spider,
-		Mimic
+		Mimic,
+		
 	}
 	
 	public enum ItemType
@@ -120,6 +123,9 @@ public static class Factory
 	{
 		List<EnemyType> enemies = new List<EnemyType> ();
 		switch (level) {
+		case 1:
+			enemies = new List<EnemyType>{EnemyType.GoblinFighter,EnemyType.GoblinHunter};
+			break;
 		default:
 			enemies = new List<EnemyType>{EnemyType.Bat,EnemyType.Spider,EnemyType.GreenSlime};
 			break;
@@ -134,6 +140,12 @@ public static class Factory
 		switch (eType) {
 		case EnemyType.Bat:
 			enemy = NewBat ();
+			break;
+		case EnemyType.GoblinFighter:
+			enemy = NewGoblinFighter ();
+			break;
+		case EnemyType.GoblinHunter:
+			enemy = NewGoblinHunter ();
 			break;
 		case EnemyType.GreenSlime:
 			enemy = NewGreenSlime ();
@@ -164,6 +176,33 @@ public static class Factory
 		enemy.Stats.AttackPower = 1;
 		enemy.Stats.DefensePower = 1;
 		enemy.Stats.AttackMaxDamage = 1;
+		return enemy;
+	}
+	
+	public static Enemy NewGoblinFighter ()
+	{
+		Enemy enemy = new Enemy ();
+		enemy.Name = "Goblin Fighter";
+		enemy.SpriteName = "goblinfighter";
+		enemy.Stats.MaxHealth = 2;
+		enemy.Stats.CurrentHealth = enemy.Stats.MaxHealth;
+		enemy.Stats.AttackPower = 1;
+		enemy.Stats.DefensePower = 1;
+		enemy.Stats.AttackMaxDamage = 1;
+		return enemy;
+	}
+	
+	public static Enemy NewGoblinHunter ()
+	{
+		Enemy enemy = new Enemy ();
+		enemy.Name = "Goblin Hunter";
+		enemy.SpriteName = "goblinhunter";
+		enemy.Stats.MaxHealth = 2;
+		enemy.Stats.CurrentHealth = enemy.Stats.MaxHealth;
+		enemy.Stats.AttackPower = 1;
+		enemy.Stats.DefensePower = 1;
+		enemy.Stats.AttackMaxDamage = 1;
+		enemy.Stats.HasRangedAttack = true;
 		return enemy;
 	}
 	
