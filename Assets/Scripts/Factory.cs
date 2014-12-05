@@ -126,6 +126,9 @@ public static class Factory
 		case 1:
 			enemies = new List<EnemyType>{EnemyType.GoblinFighter,EnemyType.GoblinHunter};
 			break;
+		case 0:
+			enemies = new List<EnemyType>{EnemyType.GoblinHunter};
+			break;
 		default:
 			enemies = new List<EnemyType>{EnemyType.Bat,EnemyType.Spider,EnemyType.GreenSlime};
 			break;

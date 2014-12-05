@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System;
 using System.Collections.Generic;
@@ -25,6 +25,7 @@ public class GameController : MonoBehaviour
 	
 	private enum GameState
 	{
+		EnemiesShooting,
 		Initializing,
 		Inventory,
 		LevelTransition,
@@ -115,6 +116,8 @@ public class GameController : MonoBehaviour
 	
 	GameObject spriteProjectile;
 	float PROJECTILE_SECONDS_PER_TILE = 0.1f;
+	List<Enemy> enemiesShooting = new List<Enemy> ();
+	List<GameObject> enemyShots = new List<GameObject> ();
 	
 	//chance in 100
 	int CHANCE_CHEST_IS_MIMIC = 10;
@@ -442,6 +445,16 @@ public class GameController : MonoBehaviour
 		}
 	}
 	
+	void AddEnemyShot (Enemy enemy)
+	{
+		GameObject enemyShot = new GameObject ();
+		SpriteRenderer sr = enemyShot.AddComponent<SpriteRenderer> ();
+		sr.sprite = FindSpriteInTextures ("itematlas_91", texturesItem);
+		MoveSpriteTo (enemyShot, enemy.Location.x, enemy.Location.y);
+		MoveGameObjectToZLevel (enemyShot, Z_PROJECTILE);
+		enemyShots.Add (enemyShot);
+	}
+	
 	void MoveSpriteTo (GameObject sprite, int gridX, int gridY)
 	{
 		Rect rect = tileMapTerrain.GetTileBoundsLocal (gridX, gridY);
@@ -548,6 +561,9 @@ public class GameController : MonoBehaviour
 			gameState = GameState.TurnEnemyInProgress;
 			StartCoroutine (WaitForSecondsThenExecute (SECONDS_BETWEEN_TURNS, () => TakeEnemyTurn ()));
 			break;
+		default:
+			//otherwise keep doing whatever you're doing
+			break;
 		}
 	}
 	
@@ -630,6 +646,7 @@ public class GameController : MonoBehaviour
 	
 	void EndTurnInProgress ()
 	{
+		Debug.Log ("ending turn in progress");
 		if (gameState == GameState.TurnPlayerInProgress) {
 			gameState = GameState.TurnEnemy;
 		} else {
@@ -659,6 +676,7 @@ public class GameController : MonoBehaviour
 	
 	private void TakeEnemyTurn ()
 	{
+		enemiesShooting.Clear ();
 		for (int i=0; i<enemies.Count; i++) {
 			Enemy enemy = enemies [i];
 			//flip sprite to face player if necessary
@@ -672,11 +690,9 @@ public class GameController : MonoBehaviour
 			}
 			if (map.DistanceToPlayer (enemy.Location) == 1) {
 				CombatCheck (enemy, pc);
-				UpdateHud ();
-				gameState = GameState.TurnPlayer;
 			} else {
 				if (enemy.Stats.HasRangedAttack && map.Distance (enemy.Location, pc.Location) <= enemy.Stats.VisionRange && IsClearPath (enemy.Location, pc.Location)) {
-					RangedCombatCheck (enemy, pc);
+					enemiesShooting.Add (enemy);
 				} else {
 					Address oldLoc = enemy.Location;
 					enemy.Move (map);
@@ -690,10 +706,14 @@ public class GameController : MonoBehaviour
 						} 
 						MoveSpriteTo (enemySprites [i], enemy.Location.x, enemy.Location.y);
 					}
-					UpdateHud ();
-					gameState = GameState.TurnPlayer;
 				}
 			}
+		}
+		if (enemiesShooting.Count > 0) {
+			ShootEnemyShots ();
+		} else {
+			UpdateHud ();
+			gameState = GameState.TurnPlayer;
 		}
 	}
 		
@@ -908,6 +928,78 @@ public class GameController : MonoBehaviour
 		SeeTilesFlood ();
 	}
 	
+	
+	IEnumerator MoveEnemyShots ()
+	{
+		float moveTime = 0;
+		while (true) {
+			int inactiveCount = 0;
+			for (int i=0; i<enemyShots.Count; i++) {
+				GameObject spriteShot = enemyShots [i];
+				if (!spriteShot.activeSelf) {
+					inactiveCount++;
+				} else {
+					Address originTile = enemiesShooting [i].Location;
+					Address targetTile = pc.Location;
+				
+					float moveDuration = map.Distance (originTile, targetTile) * PROJECTILE_SECONDS_PER_TILE;
+				
+					//get screen coordinates of origin and target
+					Rect rectOrigin = tileMapTerrain.GetTileBoundsLocal (originTile.x, originTile.y);
+					Rect rectTarget = tileMapTerrain.GetTileBoundsLocal (targetTile.x, targetTile.y);
+				
+					// store the starting position of the object this script is attached to as well as the target position
+					Vector3 oldPos = new Vector3 (rectOrigin.center.x, rectOrigin.center.y, Z_PROJECTILE);
+					Vector3 newPos = new Vector3 (rectTarget.center.x, rectTarget.center.y, Z_PROJECTILE);
+					moveTime += Time.deltaTime;
+					Vector3 curPos = Vector3.Lerp (oldPos, newPos, moveTime / moveDuration);
+					spriteShot.transform.position = curPos;
+					int curX = (int)curPos.x;
+					int curY = (int)curPos.y;
+					Debug.Log (new Address (curX, curY).ToString ());
+					if (curX != originTile.x || curY != originTile.y) {
+						if (!map.Cells [curX, curY].Passable) {
+							spriteShot.SetActive (false);
+							inactiveCount++;
+							if (pc.Location.x == curX && pc.Location.y == curY) {
+								audio.PlayOneShot (audioHitPlayer, VOLUME);
+								
+							} else {
+								audio.PlayOneShot (audioShotMiss, VOLUME);
+							}
+						}
+					}
+				}
+			}
+			Debug.Log ("Shots:" + enemyShots.Count + ", Inactive shots:" + inactiveCount);
+			//are there still any sprites active?
+			if (inactiveCount == enemyShots.Count) {
+				//delete all shot sprites
+				while (enemyShots.Count>0) {
+					GameObject.Destroy (enemyShots [0]);
+					enemyShots.RemoveAt (0);	
+				}
+				//delete all enemiesShooting;
+				enemiesShooting.Clear ();
+				gameState = GameState.TurnPlayer;
+				break;
+			}
+			yield return new WaitForSeconds (0.01f);
+		}
+	}
+	
+	private void ShootEnemyShots ()
+	{
+		gameState = GameState.EnemiesShooting;
+		enemyShots.Clear ();
+		for (int i=0; i<enemiesShooting.Count; i++) {
+			Enemy enemy = enemies [i];
+			//create a sprite for each enemy projectile
+			AddEnemyShot (enemy);
+		}
+		StartCoroutine (MoveEnemyShots ());
+	}
+	
 	private bool IsClearPath (Address originTile, Address targetTile)
 	{
 	
@@ -971,6 +1063,7 @@ public class GameController : MonoBehaviour
 			spriteProjectile.transform.position = curPos;
 			int curX = (int)curPos.x;
 			int curY = (int)curPos.y;
+			Debug.Log (new Address (curX, curY).ToString ());
 			if (curX != originTile.x || curY != originTile.y) {
 				if (!map.Cells [curX, curY].Passable) {
 					spriteProjectile.SetActive (false);
@@ -981,7 +1074,8 @@ public class GameController : MonoBehaviour
 							audio.PlayOneShot (audioShotMiss, VOLUME);
 						} else {
 							audio.PlayOneShot (audioHitEnemy, VOLUME);
-						}	
+						}
+						EndTurnInProgress ();
 					} else {
 						//attacker is an enemy
 						if (pc.Location.x == curX && pc.Location.y == curY) {
@@ -989,14 +1083,17 @@ public class GameController : MonoBehaviour
 						} else {
 							audio.PlayOneShot (audioShotMiss, VOLUME);
 						}
+						//is this the last enemy to shoot?
+						if (attacker == enemiesShooting [enemiesShooting.Count - 1]) {
+							EndTurnInProgress ();
+						}
 					}
 					break;
 				}
 			}
-			yield return null;
+			yield return new WaitForSeconds (0.1f);
 		}
 		spriteProjectile.SetActive (false);
-		EndTurnInProgress ();
 	}
 	
 	private void RangedCombatCheck (Actor attacker, Actor defender)
