@@ -672,6 +672,8 @@ public class GameController : MonoBehaviour
 			}
 			if (map.DistanceToPlayer (enemy.Location) == 1) {
 				CombatCheck (enemy, pc);
+				UpdateHud ();
+				gameState = GameState.TurnPlayer;
 			} else {
 				if (enemy.Stats.HasRangedAttack && map.Distance (enemy.Location, pc.Location) <= enemy.Stats.VisionRange && IsClearPath (enemy.Location, pc.Location)) {
 					RangedCombatCheck (enemy, pc);
@@ -688,11 +690,11 @@ public class GameController : MonoBehaviour
 						} 
 						MoveSpriteTo (enemySprites [i], enemy.Location.x, enemy.Location.y);
 					}
+					UpdateHud ();
+					gameState = GameState.TurnPlayer;
 				}
 			}
 		}
-		UpdateHud ();
-		gameState = GameState.TurnPlayer;
 	}
 		
 	private void CheckInput ()
@@ -969,7 +971,7 @@ public class GameController : MonoBehaviour
 			spriteProjectile.transform.position = curPos;
 			int curX = (int)curPos.x;
 			int curY = (int)curPos.y;
-			if (curX != originTile.x && curY != originTile.y) {
+			if (curX != originTile.x || curY != originTile.y) {
 				if (!map.Cells [curX, curY].Passable) {
 					spriteProjectile.SetActive (false);
 					if (attacker == pc) {

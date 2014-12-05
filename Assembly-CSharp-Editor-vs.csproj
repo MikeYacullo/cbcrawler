@@ -60,14 +60,14 @@
  <Reference Include="UnityEditor.UI">
  <HintPath>/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/GUISystem/4.6.0/Editor/UnityEditor.UI.dll</HintPath>
  </Reference>
- <Reference Include="UnityEditor.Graphs">
- <HintPath>/Applications/Unity/Unity.app/Contents/Frameworks/Managed/UnityEditor.Graphs.dll</HintPath>
- </Reference>
  <Reference Include="ConsolePro.RunTime">
  <HintPath>/Users/Mike/Dropbox/Unity/Projects/cbcrawler/Assets/Imports/ConsolePro/ConsolePro.RunTime.dll</HintPath>
  </Reference>
  <Reference Include="ConsolePro.Editor">
  <HintPath>/Users/Mike/Dropbox/Unity/Projects/cbcrawler/Assets/Imports/ConsolePro/Editor/ConsolePro.Editor.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEditor.Graphs">
+ <HintPath>/Applications/Unity/Unity.app/Contents/Frameworks/Managed/UnityEditor.Graphs.dll</HintPath>
  </Reference>
   </ItemGroup>
   <ItemGroup>
