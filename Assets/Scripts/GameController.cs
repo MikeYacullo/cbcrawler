@@ -984,7 +984,7 @@ public class GameController : MonoBehaviour
 				gameState = GameState.TurnPlayer;
 				break;
 			}
-			yield return new WaitForSeconds (0.01f);
+			yield return null;
 		}
 	}
 	
@@ -1091,7 +1091,7 @@ public class GameController : MonoBehaviour
 					break;
 				}
 			}
-			yield return new WaitForSeconds (0.1f);
+			yield return null;
 		}
 		spriteProjectile.SetActive (false);
 	}
