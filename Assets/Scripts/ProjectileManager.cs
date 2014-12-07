@@ -6,6 +6,7 @@ public class ProjectileManager : MonoBehaviour
 {
 
 	GameManager gameManager;
+	AudioManager audioManager;
 	
 	GameObject spriteProjectile;
 	float PROJECTILE_SECONDS_PER_TILE = 0.1f;
@@ -55,10 +56,10 @@ public class ProjectileManager : MonoBehaviour
 							spriteShot.SetActive (false);
 							inactiveCount++;
 							if (gameManager.pc.Location.x == curX && gameManager.pc.Location.y == curY) {
-								audio.PlayOneShot (gameManager.audioHitPlayer, gameManager.VOLUME);
+								audioManager.Play1Shot (audioManager.audioHitPlayer);
 								
 							} else {
-								audio.PlayOneShot (gameManager.audioShotMiss, gameManager.VOLUME);
+								audioManager.Play1Shot (audioManager.audioShotMiss);
 							}
 						}
 					}
@@ -166,17 +167,17 @@ public class ProjectileManager : MonoBehaviour
 						//figure out what we hit
 						int enemyIndex = gameManager.EnemyAt (new Address (curX, curY));
 						if (enemyIndex == -1) {
-							audio.PlayOneShot (gameManager.audioShotMiss, gameManager.VOLUME);
+							audioManager.Play1Shot (audioManager.audioShotMiss);
 						} else {
-							audio.PlayOneShot (gameManager.audioHitEnemy, gameManager.VOLUME);
+							audioManager.Play1Shot (audioManager.audioHitEnemy);
 						}
 						gameManager.EndTurnInProgress ();
 					} else {
 						//attacker is an enemy
 						if (gameManager.pc.Location.x == curX && gameManager.pc.Location.y == curY) {
-							audio.PlayOneShot (gameManager.audioHitPlayer, gameManager.VOLUME);	
+							audioManager.Play1Shot (audioManager.audioHitPlayer);	
 						} else {
-							audio.PlayOneShot (gameManager.audioShotMiss, gameManager.VOLUME);
+							audioManager.Play1Shot (audioManager.audioShotMiss);
 						}
 						//is this the last enemy to shoot?
 						if (attacker == enemiesShooting [enemiesShooting.Count - 1]) {
@@ -194,6 +195,7 @@ public class ProjectileManager : MonoBehaviour
 	void Start ()
 	{
 		gameManager = GameObject.Find ("GameController").GetComponent<GameManager> ();
+		audioManager = GameObject.Find ("GameController").GetComponent<AudioManager> ();
 		spriteProjectile = GameObject.Find ("SpriteProjectile");
 		spriteProjectile.SetActive (false);
 	}

@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: e56784fd0b2914f9db2f1d03b38ad535
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - audioStep: {fileID: 8300000, guid: 1044421261ca14716818c01f66690e2e, type: 3}
+  - audioDoor: {fileID: 8300000, guid: 60f3f940c70464cb382c59837bf982b5, type: 3}
+  - audioHitEnemy: {instanceID: 0}
+  - audioHitPlayer: {instanceID: 0}
+  - audioWhiff: {instanceID: 0}
+  - audioDieEnemy: {instanceID: 0}
+  - audioLoot: {instanceID: 0}
+  - audioChestOpen: {instanceID: 0}
+  - audioShotBow: {instanceID: 0}
+  - audioShotMiss: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 

@@ -7,6 +7,7 @@ using UnityTileMap;
 public class GameManager : MonoBehaviour
 {
 
+	public AudioManager audioManager;
 	public ProjectileManager projectileManager;
 
 	public TileMapBehaviour tileMapTerrain;
@@ -65,18 +66,6 @@ public class GameManager : MonoBehaviour
 
 	private int mapWidth = 35, mapHeight = 35;
 	
-	public float VOLUME = 1.0f;
-	public AudioClip audioStep;
-	public AudioClip audioDoor;
-	public AudioClip audioHitEnemy;
-	public AudioClip audioHitPlayer;
-	public AudioClip audioWhiff;
-	public AudioClip audioDieEnemy;
-	public AudioClip audioLoot;
-	public AudioClip audioChestOpen;
-	public AudioClip audioShotBow;
-	public AudioClip audioShotMiss;
-	
 	public List<Enemy> enemies = new List<Enemy> ();
 	private List<GameObject> enemySprites = new List<GameObject> ();
 	private List<Enemy>[] levelEnemies;
@@ -131,11 +120,13 @@ public class GameManager : MonoBehaviour
 	{
 		gameState = GameState.Initializing;
 		
+		audioManager = GameObject.Find ("GameController").GetComponent<AudioManager> ();
+		
 		projectileManager = GameObject.Find ("GameController").GetComponent<ProjectileManager> ();
 		
 		camera = GameObject.Find ("Camera").GetComponent<Camera> ();
 		
-		VOLUME = float.Parse (PlayerPrefs.GetString ("soundLevel"));
+		audioManager.FXVOLUME = float.Parse (PlayerPrefs.GetString ("soundLevel"));
 		
 		tileMapTerrain = (TileMapBehaviour)GameObject.Find ("TileMapTerrain").GetComponent<TileMapBehaviour> ();
 		tileMapFOW = (TileMapBehaviour)GameObject.Find ("TileMapFOW").GetComponent<TileMapBehaviour> ();
@@ -791,7 +782,7 @@ public class GameManager : MonoBehaviour
 		if (itemIndex != -1 && !(items [itemIndex] is ItemDecor)) {
 			if (pc.AddToInventory (items [itemIndex])) {
 				RemoveItem (itemIndex);
-				audio.PlayOneShot (audioLoot, VOLUME);
+				audioManager.Play1Shot (audioManager.audioLoot);
 				DisplayMessage ("Picked up " + pc.Inventory [pc.Inventory.Count - 1].Name);
 			}
 		}
@@ -837,7 +828,7 @@ public class GameManager : MonoBehaviour
 			if (tileMapTerrain [newX, newY] == TILE_DOORCLOSED) {
 				tileMapTerrain [newX, newY] = TILE_DOOROPEN;
 				map.Cells [newX, newY].BlocksVision = false;
-				audio.PlayOneShot (audioDoor, VOLUME);
+				audioManager.Play1Shot (audioManager.audioDoor);
 			} else if (map.Cells [newX, newY].Type == Map.CellType.Exit && currentLevel != LEVEL_COUNT - 1) {
 				MovePlayerTo (new Address (newX, newY));
 				map.Cells [pc.Location.x, pc.Location.y].Passable = true;
@@ -848,7 +839,7 @@ public class GameManager : MonoBehaviour
 				MoveToLevel (currentLevel - 1);
 			} else {
 				MovePlayerTo (new Address (newX, newY));
-				audio.PlayOneShot (audioStep, VOLUME);
+				audioManager.Play1Shot (audioManager.audioStep);
 			}
 			SeeTilesFlood ();	
 		} else {
@@ -868,7 +859,7 @@ public class GameManager : MonoBehaviour
 					case ItemChest.ChestState.Closed:
 						chest.SpriteName = "chestopen";
 						chest.State = ItemChest.ChestState.Open;
-						audio.PlayOneShot (audioChestOpen, VOLUME);
+						audioManager.Play1Shot (audioManager.audioChestOpen);
 						break;
 					case ItemChest.ChestState.Open:
 						chest.SpriteName = "chestempty";
@@ -893,7 +884,7 @@ public class GameManager : MonoBehaviour
 				CombatCheck (pc, enemies [enemyIndex]);
 				//TODO encapsulate
 				if (enemies [enemyIndex].Stats.CurrentHealth <= 0) {
-					audio.PlayOneShot (audioDieEnemy, VOLUME);
+					audioManager.Play1Shot (audioManager.audioDieEnemy);
 					//drop loot
 					Item loot = enemies [enemyIndex].Loot;
 					if (loot != null) {
@@ -933,7 +924,7 @@ public class GameManager : MonoBehaviour
 		} else {
 			gameState = GameState.TurnEnemyInProgress;
 		}
-		audio.PlayOneShot (audioShotBow, VOLUME);
+		audioManager.Play1Shot (audioManager.audioShotBow);
 		StartCoroutine (projectileManager.MoveProjectile (attacker, defender));
 		//} else {
 		// play wah wah sound
@@ -953,14 +944,14 @@ public class GameManager : MonoBehaviour
 			DisplayMessage (defender.Name + " is hit for " + damage + " damage!");
 			defender.Stats.CurrentHealth -= damage;
 			if (attacker.GetType ().ToString () == "PlayerCharacter") {
-				audio.PlayOneShot (audioHitEnemy, VOLUME);
+				audioManager.Play1Shot (audioManager.audioHitEnemy);
 			} else {
-				audio.PlayOneShot (audioHitPlayer, VOLUME);
+				audioManager.Play1Shot (audioManager.audioHitPlayer);
 			}
 		} else {
 			//miss
 			DisplayMessage (attacker.Name + " misses!");
-			audio.PlayOneShot (audioWhiff, 0.3f);
+			audioManager.Play1Shot (audioManager.audioWhiff);
 		}
 	}
 	
