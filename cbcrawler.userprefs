@@ -1,9 +1,11 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/GameManager.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/ProjectileManager.cs">
     <Files>
-      <File FileName="Assets/Scripts/GameManager.cs" Line="927" Column="65" />
-      <File FileName="Assets/Scripts/ProjectileManager.cs" Line="86" Column="28" />
+      <File FileName="Assets/Scripts/GameManager.cs" Line="926" Column="4" />
+      <File FileName="Assets/Scripts/ProjectileManager.cs" Line="172" Column="8" />
+      <File FileName="Assets/Scripts/AudioManager.cs" Line="24" Column="30" />
+      <File FileName="Assets/Scripts/Factory.cs" Line="153" Column="10" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

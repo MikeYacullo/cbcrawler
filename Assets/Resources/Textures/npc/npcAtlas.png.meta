@@ -146,7 +146,7 @@ TextureImporter:
     21300282: enemyatlas_141
     21300284: enemyatlas_142
     21300286: enemyatlas_143
-    21300288: enemyatlas_144
+    21300288: gnoll
     21300290: enemyatlas_145
     21300292: enemyatlas_146
     21300294: enemyatlas_147
@@ -182,24 +182,24 @@ TextureImporter:
     21300354: enemyatlas_177
     21300356: enemyatlas_178
     21300358: enemyatlas_179
-    21300360: enemyatlas_180
+    21300360: purpleslime
     21300362: greenslime
     21300364: bat
     21300366: enemyatlas_183
     21300368: enemyatlas_184
     21300370: spider
-    21300372: enemyatlas_186
+    21300372: spittingspider
     21300374: rat
     21300376: enemyatlas_188
     21300378: snake
     21300380: enemyatlas_190
     21300382: enemyatlas_191
-    21300384: enemyatlas_192
+    21300384: wolf
     21300386: enemyatlas_193
-    21300388: enemyatlas_194
+    21300388: direwolf
     21300390: enemyatlas_195
     21300392: enemyatlas_196
-    21300394: enemyatlas_197
+    21300394: crow
     21300396: enemyatlas_198
     21300398: enemyatlas_199
     21300400: enemyatlas_200
@@ -256,7 +256,7 @@ TextureImporter:
     21300502: enemyatlas_251
     21300504: zombie
     21300506: enemyatlas_253
-    21300508: enemyatlas_254
+    21300508: skeleton
     21300510: enemyatlas_255
     21300512: enemyatlas_256
     21300514: wraith
@@ -296,12 +296,12 @@ TextureImporter:
     21300582: enemyatlas_291
     21300584: enemyatlas_292
     21300586: enemyatlas_293
-    21300588: enemyatlas_294
+    21300588: giantworm
     21300590: enemyatlas_295
-    21300592: enemyatlas_296
+    21300592: bear
     21300594: enemyatlas_297
     21300596: enemyatlas_298
-    21300598: enemyatlas_299
+    21300598: scorpion
     21300600: enemyatlas_300
     21300602: enemyatlas_301
     21300604: enemyatlas_302
@@ -1843,7 +1843,7 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: enemyatlas_144
+    - name: gnoll
       rect:
         serializedVersion: 2
         x: 0
@@ -2203,7 +2203,7 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: enemyatlas_180
+    - name: purpleslime
       rect:
         serializedVersion: 2
         x: 0
@@ -2263,13 +2263,13 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: enemyatlas_186
+    - name: spittingspider
       rect:
         serializedVersion: 2
-        x: 144
+        x: 145
         y: 216
-        width: 24
-        height: 24
+        width: 23
+        height: 23
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -2323,7 +2323,7 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: enemyatlas_192
+    - name: wolf
       rect:
         serializedVersion: 2
         x: 288
@@ -2343,7 +2343,7 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: enemyatlas_194
+    - name: direwolf
       rect:
         serializedVersion: 2
         x: 336
@@ -2373,7 +2373,7 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: enemyatlas_197
+    - name: crow
       rect:
         serializedVersion: 2
         x: 408
@@ -2943,13 +2943,13 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: enemyatlas_254
+    - name: skeleton
       rect:
         serializedVersion: 2
-        x: 48
+        x: 49
         y: 120
-        width: 24
-        height: 24
+        width: 21
+        height: 22
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -3343,7 +3343,7 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: enemyatlas_294
+    - name: giantworm
       rect:
         serializedVersion: 2
         x: 144
@@ -3363,7 +3363,7 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: enemyatlas_296
+    - name: bear
       rect:
         serializedVersion: 2
         x: 192
@@ -3393,7 +3393,7 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: enemyatlas_299
+    - name: scorpion
       rect:
         serializedVersion: 2
         x: 264

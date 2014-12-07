@@ -11,7 +11,11 @@ public static class Factory
 		GreenSlime,
 		GoblinFighter,
 		GoblinHunter,
+		Rat,
+		Snake,
 		Spider,
+		SpittingSpider,
+		Wolf,
 		Mimic,
 		
 	}
@@ -123,14 +127,17 @@ public static class Factory
 	{
 		List<EnemyType> enemies = new List<EnemyType> ();
 		switch (level) {
-		case 1:
-			enemies = new List<EnemyType>{EnemyType.GoblinFighter,EnemyType.GoblinHunter};
-			break;
 		case 0:
-			enemies = new List<EnemyType>{EnemyType.GoblinHunter};
+			enemies = new List<EnemyType>{EnemyType.Bat,EnemyType.Rat,EnemyType.Snake,EnemyType.Spider};
+			break;
+		case 1:
+			enemies = new List<EnemyType>{EnemyType.Bat,EnemyType.Snake,EnemyType.Spider,EnemyType.SpittingSpider, EnemyType.Wolf};
+			break;
+		case 3:
+			enemies = new List<EnemyType>{EnemyType.GoblinFighter,EnemyType.GoblinHunter,EnemyType.GreenSlime};
 			break;
 		default:
-			enemies = new List<EnemyType>{EnemyType.Bat,EnemyType.Spider,EnemyType.GreenSlime};
+			enemies = new List<EnemyType>{EnemyType.Bat,EnemyType.Spider};
 			break;
 		}
 		EnemyType type = enemies [Random.Range (0, enemies.Count)];
@@ -156,8 +163,20 @@ public static class Factory
 		case EnemyType.Mimic:
 			enemy = NewMimic ();
 			break;
+		case EnemyType.Rat:
+			enemy = NewRat ();
+			break;
+		case EnemyType.Snake:
+			enemy = NewSnake ();
+			break;
+		case EnemyType.SpittingSpider:
+			enemy = NewSpittingSpider ();
+			break;
 		case EnemyType.Spider:
 			enemy = NewSpider ();
+			break;
+		case EnemyType.Wolf:
+			enemy = NewWolf ();
 			break;
 		default:
 			//this should never happen!
@@ -235,11 +254,64 @@ public static class Factory
 		return enemy;
 	}
 	
+	public static Enemy NewRat ()
+	{
+		Enemy enemy = new Enemy ();
+		enemy.Name = "Rat";
+		enemy.SpriteName = "rat";
+		enemy.Stats.MaxHealth = 5;
+		enemy.Stats.CurrentHealth = enemy.Stats.MaxHealth;
+		enemy.Stats.AttackPower = 1;
+		enemy.Stats.DefensePower = 1;
+		enemy.Stats.AttackMaxDamage = 1;
+		return enemy;
+	}
+	
+	public static Enemy NewSnake ()
+	{
+		Enemy enemy = new Enemy ();
+		enemy.Name = "Snake";
+		enemy.SpriteName = "snake";
+		enemy.Stats.MaxHealth = 5;
+		enemy.Stats.CurrentHealth = enemy.Stats.MaxHealth;
+		enemy.Stats.AttackPower = 1;
+		enemy.Stats.DefensePower = 1;
+		enemy.Stats.AttackMaxDamage = 1;
+		return enemy;
+	}
+	
 	public static Enemy NewSpider ()
 	{
 		Enemy enemy = new Enemy ();
 		enemy.Name = "Spider";
 		enemy.SpriteName = "spider";
+		enemy.Stats.MaxHealth = 5;
+		enemy.Stats.CurrentHealth = enemy.Stats.MaxHealth;
+		enemy.Stats.AttackPower = 1;
+		enemy.Stats.DefensePower = 1;
+		enemy.Stats.AttackMaxDamage = 1;
+		return enemy;
+	}
+	
+	public static Enemy NewSpittingSpider ()
+	{
+		Enemy enemy = new Enemy ();
+		enemy.Name = "Spitting Spider";
+		enemy.SpriteName = "spittingspider";
+		enemy.Stats.MaxHealth = 5;
+		enemy.Stats.CurrentHealth = enemy.Stats.MaxHealth;
+		enemy.Stats.AttackPower = 1;
+		enemy.Stats.DefensePower = 1;
+		enemy.Stats.AttackMaxDamage = 1;
+		enemy.Stats.HasRangedAttack = true;
+		return enemy;
+	}
+	
+	public static Enemy NewWolf ()
+	{
+		Enemy enemy = new Enemy ();
+		enemy.Name = "Wolf";
+		enemy.SpriteName = "wolf";
 		enemy.Stats.MaxHealth = 5;
 		enemy.Stats.CurrentHealth = enemy.Stats.MaxHealth;
 		enemy.Stats.AttackPower = 1;
