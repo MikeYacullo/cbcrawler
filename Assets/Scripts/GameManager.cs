@@ -18,6 +18,7 @@ public class GameManager : MonoBehaviour
 	private Sprite[] texturesNPC;
 	public Sprite[] texturesItem;
 	private Sprite[] texturesItemDecor;
+	public Sprite[] texturesProjectile;
 	
 	private Camera camera;
 
@@ -185,6 +186,7 @@ public class GameManager : MonoBehaviour
 		texturesNPC = Resources.LoadAll<Sprite> ("Textures/NPC");
 		texturesItem = Resources.LoadAll<Sprite> ("Textures/Item");
 		texturesItemDecor = Resources.LoadAll<Sprite> ("Textures/ItemDecor");
+		texturesProjectile = Resources.LoadAll<Sprite> ("Textures/projectile");
 	}
 	
 	public Sprite FindSpriteInTextures (string spriteName, Sprite[] textures)
@@ -673,7 +675,7 @@ public class GameManager : MonoBehaviour
 			if (map.DistanceToPlayer (enemy.Location) == 1) {
 				CombatCheck (enemy, pc);
 			} else {
-				if (enemy.Stats.HasRangedAttack 
+				if (enemy.CurrentWeapon.IsRanged 
 					&& map.Distance (enemy.Location, pc.Location) <= enemy.Stats.VisionRange 
 					&& projectileManager.IsClearPath (enemy.Location, pc.Location)) {
 					projectileManager.enemiesShooting.Add (enemy);

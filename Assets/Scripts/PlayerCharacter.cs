@@ -34,6 +34,7 @@ public class PlayerCharacter : Actor
 		Stats.MaxHealth = 10;
 		Stats.CurrentHealth = 10;
 		Stats.VisionRange = 6;
+		CurrentWeapon.ProjectileSprite = "unassigned";
 	}
 	
 	public bool AddToInventory (Item item)
@@ -59,6 +60,8 @@ public class PlayerCharacter : Actor
 			Stats.MaxHealth = 10;
 			Stats.CurrentHealth = 10;
 			Stats.VisionRange = 6;
+			CurrentWeapon.IsRanged = true;
+			CurrentWeapon.ProjectileSprite = "holy";
 			break;
 		case ClassType.Fighter:
 			Stats.AttackPower = 2;
@@ -83,6 +86,8 @@ public class PlayerCharacter : Actor
 			Stats.MaxHealth = 6;
 			Stats.CurrentHealth = 6;
 			Stats.VisionRange = 6;
+			CurrentWeapon.IsRanged = true;
+			CurrentWeapon.ProjectileSprite = "fire";
 			break;
 		default:
 			break;

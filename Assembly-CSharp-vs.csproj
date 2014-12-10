@@ -99,6 +99,7 @@
      <Compile Include="Assets\Scripts\Address.cs" />
      <Compile Include="Assets\Scripts\AudioManager.cs" />
      <Compile Include="Assets\Scripts\BackpackSlotController.cs" />
+     <Compile Include="Assets\Scripts\DamageType.cs" />
      <Compile Include="Assets\Scripts\Enemy.cs" />
      <Compile Include="Assets\Scripts\Factory.cs" />
      <Compile Include="Assets\Scripts\GameManager.cs" />
@@ -112,6 +113,7 @@
      <Compile Include="Assets\Scripts\ProjectileManager.cs" />
      <Compile Include="Assets\Scripts\Stats.cs" />
      <Compile Include="Assets\Scripts\TitleScreenController.cs" />
+     <Compile Include="Assets\Scripts\WeaponProperty.cs" />
      <None Include="Assets\Imports\Pro-D\Pro-D Logo\Pro-D Logo Text.txt" />
      <None Include="Assets\Imports\ConsolePro\Readme.txt" />
  <Reference Include="Assembly-UnityScript-firstpass">

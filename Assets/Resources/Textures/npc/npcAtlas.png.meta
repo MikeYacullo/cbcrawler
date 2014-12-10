@@ -187,8 +187,8 @@ TextureImporter:
     21300364: bat
     21300366: enemyatlas_183
     21300368: enemyatlas_184
-    21300370: spider
-    21300372: spittingspider
+    21300370: spittingspider
+    21300372: spider
     21300374: rat
     21300376: enemyatlas_188
     21300378: snake
@@ -2253,17 +2253,17 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: spider
+    - name: spittingspider
       rect:
         serializedVersion: 2
-        x: 120
+        x: 121
         y: 216
-        width: 24
-        height: 24
+        width: 23
+        height: 23
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: spittingspider
+    - name: spider
       rect:
         serializedVersion: 2
         x: 145

@@ -17,10 +17,21 @@ public class ProjectileManager : MonoBehaviour
 	{
 		GameObject enemyShot = new GameObject ();
 		SpriteRenderer sr = enemyShot.AddComponent<SpriteRenderer> ();
-		sr.sprite = gameManager.FindSpriteInTextures ("itematlas_91", gameManager.texturesItem);
+		sr.sprite = gameManager.FindSpriteInTextures (enemy.CurrentWeapon.ProjectileSprite, gameManager.texturesProjectile);
 		gameManager.MoveSpriteTo (enemyShot, enemy.Location.x, enemy.Location.y);
 		gameManager.MoveGameObjectToZLevel (enemyShot, gameManager.Z_PROJECTILE);
+		//point shot at the pc		
+		enemyShot.transform.rotation = LookAt2D (enemy.Location, gameManager.pc.Location);
 		enemyShots.Add (enemyShot);
+	}
+	
+	public Quaternion LookAt2D (Address origin, Address target)
+	{
+		Vector3 dir = new Vector3 (target.x - origin.x, target.y - origin.y, 0);
+		//Debug.Log ("dir:" + dir.ToString ());
+		float angle = Mathf.Atan2 (dir.y, dir.x) * Mathf.Rad2Deg;
+		angle -= 90; //adjust for upward-oriented sprites
+		return Quaternion.AngleAxis (angle, Vector3.forward);
 	}
 	
 	public IEnumerator MoveEnemyShots ()
@@ -50,7 +61,7 @@ public class ProjectileManager : MonoBehaviour
 					spriteShot.transform.position = curPos;
 					int curX = (int)curPos.x;
 					int curY = (int)curPos.y;
-					Debug.Log (new Address (curX, curY).ToString ());
+					//Debug.Log (new Address (curX, curY).ToString ());
 					if (curX != originTile.x || curY != originTile.y) {
 						if (!gameManager.map.Cells [curX, curY].Passable) {
 							spriteShot.SetActive (false);
@@ -65,7 +76,7 @@ public class ProjectileManager : MonoBehaviour
 					}
 				}
 			}
-			Debug.Log ("Shots:" + enemyShots.Count + ", Inactive shots:" + inactiveCount);
+			//Debug.Log ("Shots:" + enemyShots.Count + ", Inactive shots:" + inactiveCount);
 			//are there still any sprites active?
 			if (inactiveCount == enemyShots.Count) {
 				//delete all shot sprites
@@ -78,7 +89,7 @@ public class ProjectileManager : MonoBehaviour
 				gameManager.gameState = GameManager.GameState.TurnPlayer;
 				break;
 			}
-			yield return null;
+			yield return new WaitForSeconds (0.01f);
 		}
 	}
 	
@@ -87,7 +98,7 @@ public class ProjectileManager : MonoBehaviour
 		gameManager.gameState = GameManager.GameState.EnemiesShooting;
 		enemyShots.Clear ();
 		for (int i=0; i<enemiesShooting.Count; i++) {
-			Enemy enemy = gameManager.enemies [i];
+			Enemy enemy = enemiesShooting [i];
 			//create a sprite for each enemy projectile
 			AddEnemyShot (enemy);
 		}
@@ -142,6 +153,9 @@ public class ProjectileManager : MonoBehaviour
 		Address targetTile = defender.Location;
 		
 		spriteProjectile.SetActive (true);
+		SpriteRenderer sr = spriteProjectile.GetComponent<SpriteRenderer> ();
+		sr.sprite = gameManager.FindSpriteInTextures (gameManager.pc.CurrentWeapon.ProjectileSprite, gameManager.texturesProjectile);
+		spriteProjectile.transform.rotation = LookAt2D (originTile, targetTile);
 		float moveDuration = gameManager.map.Distance (originTile, targetTile) * PROJECTILE_SECONDS_PER_TILE;
 		
 		//get screen coordinates of origin and target

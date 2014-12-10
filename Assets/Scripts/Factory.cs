@@ -128,7 +128,9 @@ public static class Factory
 		List<EnemyType> enemies = new List<EnemyType> ();
 		switch (level) {
 		case 0:
-			enemies = new List<EnemyType>{EnemyType.Bat,EnemyType.Rat,EnemyType.Snake,EnemyType.Spider};
+			//enemies = new List<EnemyType>{EnemyType.Bat,EnemyType.Rat,EnemyType.Snake,EnemyType.Spider};
+			enemies = new List<EnemyType>{EnemyType.SpittingSpider,EnemyType.GoblinHunter};
+			
 			break;
 		case 1:
 			enemies = new List<EnemyType>{EnemyType.Bat,EnemyType.Snake,EnemyType.Spider,EnemyType.SpittingSpider, EnemyType.Wolf};
@@ -224,7 +226,8 @@ public static class Factory
 		enemy.Stats.AttackPower = 1;
 		enemy.Stats.DefensePower = 1;
 		enemy.Stats.AttackMaxDamage = 1;
-		enemy.Stats.HasRangedAttack = true;
+		enemy.CurrentWeapon.IsRanged = true;
+		enemy.CurrentWeapon.ProjectileSprite = "arrow";
 		return enemy;
 	}
 	
@@ -303,7 +306,8 @@ public static class Factory
 		enemy.Stats.AttackPower = 1;
 		enemy.Stats.DefensePower = 1;
 		enemy.Stats.AttackMaxDamage = 1;
-		enemy.Stats.HasRangedAttack = true;
+		enemy.CurrentWeapon.IsRanged = true;
+		enemy.CurrentWeapon.ProjectileSprite = "poison";
 		return enemy;
 	}
 	
