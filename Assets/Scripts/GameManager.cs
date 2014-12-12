@@ -217,7 +217,6 @@ public class GameManager : MonoBehaviour
 		InitPlayerCharacter ();
 		InitEnemies ();
 		InitItems ();
-		UpdateHud ();
 		pnlTransition.SetActive (false);
 		gameState = GameState.TurnPlayer;
 	}
@@ -640,6 +639,7 @@ public class GameManager : MonoBehaviour
 	
 	private void TakePlayerTurn ()
 	{
+		UpdateHud ();
 		if (pcIsPathfinding) {
 			MovePCOnPath ();
 		} else {
@@ -660,6 +660,7 @@ public class GameManager : MonoBehaviour
 	
 	private void TakeEnemyTurn ()
 	{
+		UpdateHud ();
 		projectileManager.enemiesShooting.Clear ();
 		for (int i=0; i<enemies.Count; i++) {
 			Enemy enemy = enemies [i];
@@ -698,7 +699,6 @@ public class GameManager : MonoBehaviour
 		if (projectileManager.enemiesShooting.Count > 0) {
 			projectileManager.ShootEnemyShots ();
 		} else {
-			UpdateHud ();
 			gameState = GameState.TurnPlayer;
 		}
 	}
@@ -774,7 +774,6 @@ public class GameManager : MonoBehaviour
 		}
 		if (isMoving) { 
 			TryMovePlayerTo (new Address (newX, newY));
-			UpdateHud ();
 			gameState = GameState.TurnEnemy;
 		}
 	}
@@ -907,6 +906,13 @@ public class GameManager : MonoBehaviour
 	
 	private void RangedCombatCheck (Actor defender)
 	{
+		//flip player if needed
+		if (defender.Location.x > pc.Location.x) {
+			pcIsFlipped = true;
+		} 
+		if (defender.Location.x < pc.Location.x) {
+			pcIsFlipped = false;
+		} 
 		gameState = GameState.TurnPlayerInProgress;
 		audioManager.Play1Shot (audioManager.audioShotBow);
 		StartCoroutine (projectileManager.MovePCShot (defender));
