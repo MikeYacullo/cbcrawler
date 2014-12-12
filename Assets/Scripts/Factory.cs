@@ -129,7 +129,8 @@ public static class Factory
 		switch (level) {
 		case 0:
 			//enemies = new List<EnemyType>{EnemyType.Bat,EnemyType.Rat,EnemyType.Snake,EnemyType.Spider};
-			enemies = new List<EnemyType>{EnemyType.SpittingSpider,EnemyType.GoblinHunter};
+			//enemies = new List<EnemyType>{EnemyType.SpittingSpider,EnemyType.GoblinHunter};
+			enemies = new List<EnemyType>{EnemyType.GreenSlime, EnemyType.GoblinHunter};
 			
 			break;
 		case 1:
@@ -241,6 +242,7 @@ public static class Factory
 		enemy.Stats.AttackPower = 1;
 		enemy.Stats.DefensePower = 1;
 		enemy.Stats.AttackMaxDamage = 1;
+		enemy.Vulnerabilities.Add (DamageType.Fire);
 		return enemy;
 	}
 	

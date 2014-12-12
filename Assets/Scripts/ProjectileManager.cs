@@ -67,8 +67,7 @@ public class ProjectileManager : MonoBehaviour
 							spriteShot.SetActive (false);
 							inactiveCount++;
 							if (gameManager.pc.Location.x == curX && gameManager.pc.Location.y == curY) {
-								audioManager.Play1Shot (audioManager.audioHitPlayer);
-								
+								gameManager.ApplyHit (enemiesShooting [i], gameManager.pc);		
 							} else {
 								audioManager.Play1Shot (audioManager.audioShotMiss);
 							}
@@ -89,7 +88,7 @@ public class ProjectileManager : MonoBehaviour
 				gameManager.gameState = GameManager.GameState.TurnPlayer;
 				break;
 			}
-			yield return new WaitForSeconds (0.01f);
+			yield return new WaitForSeconds (0.02f);
 		}
 	}
 	
@@ -108,7 +107,7 @@ public class ProjectileManager : MonoBehaviour
 	public bool IsClearPath (Address originTile, Address targetTile)
 	{
 		
-		Debug.Log ("IsClearPath: " + originTile.ToString () + " to " + targetTile.ToString ());
+		//Debug.Log ("IsClearPath: " + originTile.ToString () + " to " + targetTile.ToString ());
 		
 		float distance = gameManager.map.Distance (originTile, targetTile);
 		//get screen coordinates of origin and target
@@ -137,7 +136,7 @@ public class ProjectileManager : MonoBehaviour
 				if (!gameManager.map.Contains (new Address (testX, testY)) 
 					|| !gameManager.map.Cells [testX, testY].Passable 
 					|| gameManager.tileMapTerrain [testX, testY] == gameManager.TILE_DOORCLOSED) {
-					Debug.Log ("clunk");
+					//Debug.Log ("clunk");
 					return false;
 				}
 			}
@@ -146,9 +145,9 @@ public class ProjectileManager : MonoBehaviour
 		return true;
 	}
 	
-	public IEnumerator MoveProjectile (Actor attacker, Actor defender)
+	public IEnumerator MovePCShot (Actor defender)
 	{	
-		
+		Actor attacker = gameManager.pc;
 		Address originTile = attacker.Location;
 		Address targetTile = defender.Location;
 		
@@ -173,31 +172,18 @@ public class ProjectileManager : MonoBehaviour
 			spriteProjectile.transform.position = curPos;
 			int curX = (int)curPos.x;
 			int curY = (int)curPos.y;
-			Debug.Log (new Address (curX, curY).ToString ());
+			//Debug.Log (new Address (curX, curY).ToString ());
 			if (curX != originTile.x || curY != originTile.y) {
 				if (!gameManager.map.Cells [curX, curY].Passable) {
 					spriteProjectile.SetActive (false);
-					if (attacker == gameManager.pc) {
-						//figure out what we hit
-						int enemyIndex = gameManager.EnemyAt (new Address (curX, curY));
-						if (enemyIndex == -1) {
-							audioManager.Play1Shot (audioManager.audioShotMiss);
-						} else {
-							audioManager.Play1Shot (audioManager.audioHitEnemy);
-						}
-						gameManager.EndTurnInProgress ();
+					//figure out what we hit
+					int enemyIndex = gameManager.EnemyAt (new Address (curX, curY));
+					if (enemyIndex == -1) {
+						audioManager.Play1Shot (audioManager.audioShotMiss);
 					} else {
-						//attacker is an enemy
-						if (gameManager.pc.Location.x == curX && gameManager.pc.Location.y == curY) {
-							audioManager.Play1Shot (audioManager.audioHitPlayer);	
-						} else {
-							audioManager.Play1Shot (audioManager.audioShotMiss);
-						}
-						//is this the last enemy to shoot?
-						if (attacker == enemiesShooting [enemiesShooting.Count - 1]) {
-							gameManager.EndTurnInProgress ();
-						}
+						gameManager.ApplyHit (attacker, defender);
 					}
+					gameManager.EndTurnInProgress ();
 					break;
 				}
 			}

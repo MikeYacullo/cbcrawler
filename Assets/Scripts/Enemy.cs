@@ -12,8 +12,6 @@ public class Enemy : Actor
 		Stats.AttackPower = 1;
 		Stats.AttackMaxDamage = 1;
 		Stats.DefensePower = 1;
-		Weakness = DamageType.None;
-		Resistance = DamageType.None;
 		CurrentWeapon.DmgType = DamageType.Physical;
 		CurrentWeapon.IsRanged = false;
 		CurrentWeapon.ProjectileSprite = "unassigned";

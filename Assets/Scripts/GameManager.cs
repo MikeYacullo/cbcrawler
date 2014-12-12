@@ -727,9 +727,11 @@ public class GameManager : MonoBehaviour
 			Map.Cell cell = map.Cells [tileClicked.x, tileClicked.y];
 			//Debug.Log (tileClicked.x + "," + tileClicked.y);
 			//is there a monster there?
-			int enemyIndex = EnemyAt (new Address (tileClicked.x, tileClicked.y));
-			if (cell.Visited && enemyIndex != -1) {
-				RangedCombatCheck (pc, enemies [enemyIndex]);
+			if (pc.CurrentWeapon.IsRanged) {
+				int enemyIndex = EnemyAt (new Address (tileClicked.x, tileClicked.y));
+				if (cell.Visited && enemyIndex != -1) {
+					RangedCombatCheck (enemies [enemyIndex]);
+				}
 			}
 			if (cell.Visited && cell.Passable) {
 				//find a path to that cell
@@ -884,20 +886,6 @@ public class GameManager : MonoBehaviour
 			int enemyIndex = EnemyAt (new Address (newX, newY));
 			if (enemyIndex != -1) {
 				CombatCheck (pc, enemies [enemyIndex]);
-				//TODO encapsulate
-				if (enemies [enemyIndex].Stats.CurrentHealth <= 0) {
-					audioManager.Play1Shot (audioManager.audioDieEnemy);
-					//drop loot
-					Item loot = enemies [enemyIndex].Loot;
-					if (loot != null) {
-						loot.Location = new Address (enemies [enemyIndex].Location.x, enemies [enemyIndex].Location.y);
-						AddItem (loot);
-						DisplayMessage (enemies [enemyIndex].Name + " drops " + loot.Name);
-					}
-					//remove enemy
-					map.Cells [enemies [enemyIndex].Location.x, enemies [enemyIndex].Location.y].Passable = true;
-					RemoveEnemy (enemyIndex);	
-				}
 			}
 		}
 	}
@@ -917,21 +905,11 @@ public class GameManager : MonoBehaviour
 	
 
 	
-	private void RangedCombatCheck (Actor attacker, Actor defender)
+	private void RangedCombatCheck (Actor defender)
 	{
-		//removed check, let the arrow fly!
-		//if (IsClearPath (attacker.Location, defender.Location)) {
-		if (gameState == GameState.TurnPlayer) {
-			gameState = GameState.TurnPlayerInProgress;
-		} else {
-			gameState = GameState.TurnEnemyInProgress;
-		}
+		gameState = GameState.TurnPlayerInProgress;
 		audioManager.Play1Shot (audioManager.audioShotBow);
-		StartCoroutine (projectileManager.MoveProjectile (attacker, defender));
-		//} else {
-		// play wah wah sound
-		//Debug.Log ("no clear shot");
-		//}
+		StartCoroutine (projectileManager.MovePCShot (defender));
 	}
 	
 	private void CombatCheck (Actor attacker, Actor defender)
@@ -941,19 +919,49 @@ public class GameManager : MonoBehaviour
 		ClearPCPath ();
 		DisplayMessage (attacker.Name + " attacks " + defender.Name + "...");
 		if (UnityEngine.Random.Range (1, 10) > 4) {
-			//hit
-			int damage = UnityEngine.Random.Range (1, attacker.Stats.AttackMaxDamage + 1);
-			DisplayMessage (defender.Name + " is hit for " + damage + " damage!");
-			defender.Stats.CurrentHealth -= damage;
-			if (attacker.GetType ().ToString () == "PlayerCharacter") {
-				audioManager.Play1Shot (audioManager.audioHitEnemy);
+			ApplyHit (attacker, defender);
+			if (attacker is PlayerCharacter) {
+				
 			} else {
-				audioManager.Play1Shot (audioManager.audioHitPlayer);
+				
 			}
 		} else {
 			//miss
 			DisplayMessage (attacker.Name + " misses!");
 			audioManager.Play1Shot (audioManager.audioWhiff);
+		}
+	}
+	
+	public void ApplyHit (Actor attacker, Actor defender)
+	{
+		int damage = UnityEngine.Random.Range (1, attacker.Stats.AttackMaxDamage + 1);
+		damage = defender.TakeDamage (damage, attacker.CurrentWeapon.DmgType);
+		DisplayMessage (defender.Name + " is hit for " + damage + " " + attacker.CurrentWeapon.DmgType.ToString () + " damage!");
+		Debug.Log ("currentHealth:" + defender.Stats.CurrentHealth);
+		if (defender is PlayerCharacter) {
+			audioManager.Play1Shot (audioManager.audioHitPlayer);
+			//stop pathfinding if happening
+			ClearPCPath ();
+		} else {
+			//it's an enemy
+			int enemyIndex = EnemyAt (new Address (defender.Location.x, defender.Location.y));
+			Enemy enemy = enemies [enemyIndex];
+			
+			if (enemy.Stats.CurrentHealth > 0) {
+				audioManager.Play1Shot (audioManager.audioHitEnemy);
+			} else {
+				audioManager.Play1Shot (audioManager.audioDieEnemy);
+				//drop loot
+				Item loot = enemy.Loot;
+				if (loot != null) {
+					loot.Location = new Address (enemy.Location.x, defender.Location.y);
+					AddItem (loot);
+					DisplayMessage (enemy.Name + " drops " + loot.Name);
+				}
+				//remove enemy
+				map.Cells [enemy.Location.x, enemy.Location.y].Passable = true;
+				RemoveEnemy (enemyIndex);	
+			}
 		}
 	}
 	

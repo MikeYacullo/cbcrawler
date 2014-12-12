@@ -35,6 +35,7 @@ public class PlayerCharacter : Actor
 		Stats.CurrentHealth = 10;
 		Stats.VisionRange = 6;
 		CurrentWeapon.ProjectileSprite = "unassigned";
+		CurrentWeapon.DmgType = DamageType.Physical;
 	}
 	
 	public bool AddToInventory (Item item)
@@ -88,6 +89,7 @@ public class PlayerCharacter : Actor
 			Stats.VisionRange = 6;
 			CurrentWeapon.IsRanged = true;
 			CurrentWeapon.ProjectileSprite = "fire";
+			CurrentWeapon.DmgType = DamageType.Fire;
 			break;
 		default:
 			break;
