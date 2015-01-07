@@ -11,6 +11,8 @@ public class Map
 	
 	public ProD.Map Dungeon;
 	
+	private int RETRIES = 100; //try this many times to place something random
+	
 	public enum CellType
 	{
 		None = 0
@@ -92,7 +94,8 @@ public class Map
 		bool ok = false;
 		int x = -1;
 		int y = -1;
-		while (!ok) {
+		int tries = 0;
+		while (!ok && tries<RETRIES) {
 			Address loc = GetRandomCell (true);
 			x = loc.x;
 			y = loc.y;
@@ -120,8 +123,13 @@ public class Map
 			default:
 				break;
 			}
+			tries++;
 		}
-		return new Address (x, y);
+		if (ok) {
+			return new Address (x, y);
+		} else {
+			return null;
+		}
 	}
 	
 	public bool IsListPassable (List<Address> locs)
@@ -153,14 +161,20 @@ public class Map
 	{
 		bool ok = false;
 		Address address = new Address (0, 0);
-		while (!ok) {
+		int tries = 0;
+		while (!ok && tries<RETRIES) {
 			//keep doing this until we find a floor surrounded by open floor
 			address = GetRandomCell (true);
 			int x = address.x;
 			int y = address.y;
 			ok = IsOpenAreaCenter (new Address (x, y));
+			tries++;
 		}
-		return address;
+		if (ok) {
+			return address;
+		} else {
+			return null;
+		}
 	}
 	
 	public float Distance (Address fromLocation, Address toLocation)
@@ -316,9 +330,29 @@ public class Map
 	}
 	
 	private void MakeDungeon ()
-	{		
-		Generator_Dungeon.SetGenericProperties (Width, Height, "Stone Dungeon Theme");
-		Dungeon = Generator_Dungeon.Generate ();		
+	{	
+		int rnd = UnityEngine.Random.Range (0, 3);
+		switch (rnd) {
+		case 0:
+			Generator_Dungeon.SetGenericProperties (Width, Height, "Stone Dungeon Theme");
+			Dungeon = Generator_Dungeon.Generate ();	
+			break;
+		case 1:
+			Generator_AlternativeDungeon.SetGenericProperties (Width, Height, "Stone Dungeon Theme");
+			Dungeon = Generator_AlternativeDungeon.Generate ();	
+			break;
+			
+		case 2:
+			Generator_DwarfTown.SetGenericProperties (Width, Height, "Stone Dungeon Theme");
+			Dungeon = Generator_DwarfTown.Generate ();	
+			break;
+		
+		default:
+			Debug.Log ("unknown dungeon generator");
+			break;
+		}
+		
+			
 		//Generator_Castle.SetGenericProperties (Width, Height, "Stone Dungeon Theme");
 		//Dungeon = Generator_Castle.Generate ();
 		for (int h=0; h<Height; h++) {
@@ -354,6 +388,7 @@ public class Map
 					Cells [w, h].BlocksVision = true;
 					break;
 				default:
+					Debug.Log ("warning: rendering unknown cell type " + Dungeon.GetCell (w, h).type.ToString () + " as floor");
 					Cells [w, h].Type = CellType.Floor;
 					Cells [w, h].Passable = true;
 					break;

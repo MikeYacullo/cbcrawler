@@ -63,6 +63,7 @@ public class PlayerCharacter : Actor
 			Stats.VisionRange = 6;
 			CurrentWeapon.IsRanged = true;
 			CurrentWeapon.ProjectileSprite = "holy";
+			CurrentWeapon.DmgType = DamageType.Holy;
 			break;
 		case ClassType.Fighter:
 			Stats.AttackPower = 2;

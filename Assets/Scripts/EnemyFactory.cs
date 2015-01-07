@@ -2,9 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public static class Factory
+public static class EnemyFactory
 {
-
+	
 	public enum EnemyType
 	{
 		Bat,
@@ -20,107 +20,9 @@ public static class Factory
 		
 	}
 	
-	public enum ItemType
-	{
-		Armor,
-		Dagger,
-		Helm,
-		Potion,
-		Sword,
-		Wand
-	}
-	
-	static Factory ()
+	static EnemyFactory ()
 	{
 		
-	}
-	
-	public static Item GetItemForLevel (int level)
-	{
-		List<ItemType> items = new List<ItemType> ();
-		switch (level) {
-		default:
-			items = new List<ItemType>{ItemType.Armor,ItemType.Dagger,ItemType.Helm,ItemType.Potion,ItemType.Sword,ItemType.Wand};
-			break;
-		}
-		ItemType type = items [Random.Range (0, items.Count)];
-		return CreateItem (type, level);
-	}
-	
-	public static Item CreateItem (ItemType iType, int level)
-	{
-		Item item = new Item ();
-		switch (iType) {
-		case ItemType.Armor:
-			item = NewArmor (level);
-			break;
-		case ItemType.Dagger:
-			item = NewDagger (level);
-			break;
-		case ItemType.Potion:
-			item = NewPotion (level);
-			break;
-		case ItemType.Helm:
-			item = NewHelm (level);
-			break;
-		case ItemType.Sword:
-			item = NewSword (level);
-			break;
-		case ItemType.Wand:
-			item = NewWand (level);
-			break;
-		default:
-			break;
-		}
-		return item;
-	}
-	
-	public static Item NewArmor (int level)
-	{
-		Item item = new ItemConsumable ();
-		item.SpriteName = "armor";
-		item.Name = "Armor";
-		return item;
-	}
-	
-	public static Item NewDagger (int level)
-	{
-		Item item = new ItemConsumable ();
-		item.SpriteName = "dagger";
-		item.Name = "Dagger";
-		return item;
-	}
-	
-	public static Item NewHelm (int level)
-	{
-		Item item = new Item ();
-		item.SpriteName = "helm";
-		item.Name = "Helm";
-		return item;
-	}
-	
-	public static Item NewPotion (int level)
-	{
-		Item item = new ItemConsumable ();
-		item.SpriteName = "potionred_s";
-		item.Name = "Small Red Potion";
-		return item;
-	}
-	
-	public static Item NewSword (int level)
-	{
-		Item item = new Item ();
-		item.SpriteName = "sword";
-		item.Name = "Sword";
-		return item;
-	}
-	
-	public static Item NewWand (int level)
-	{
-		Item item = new ItemConsumable ();
-		item.SpriteName = "wand";
-		item.Name = "Wand";
-		return item;
 	}
 	
 	public static Enemy GetEnemyForLevel (int level)
@@ -128,10 +30,7 @@ public static class Factory
 		List<EnemyType> enemies = new List<EnemyType> ();
 		switch (level) {
 		case 0:
-			//enemies = new List<EnemyType>{EnemyType.Bat,EnemyType.Rat,EnemyType.Snake,EnemyType.Spider};
-			//enemies = new List<EnemyType>{EnemyType.SpittingSpider,EnemyType.GoblinHunter};
-			enemies = new List<EnemyType>{EnemyType.GreenSlime, EnemyType.GoblinHunter};
-			
+			enemies = new List<EnemyType>{EnemyType.Bat,EnemyType.Rat,EnemyType.Snake,EnemyType.Spider};			
 			break;
 		case 1:
 			enemies = new List<EnemyType>{EnemyType.Bat,EnemyType.Snake,EnemyType.Spider,EnemyType.SpittingSpider, EnemyType.Wolf};
@@ -146,7 +45,7 @@ public static class Factory
 		EnemyType type = enemies [Random.Range (0, enemies.Count)];
 		return CreateEnemy (type, level);
 	}
-
+	
 	public static Enemy CreateEnemy (EnemyType eType, int level)
 	{
 		Enemy enemy = new Enemy ();
@@ -183,6 +82,7 @@ public static class Factory
 			break;
 		default:
 			//this should never happen!
+			Debug.Log ("WARNING: CreateEnemy received unhandled enemy type " + eType.ToString ());
 			break;
 		}
 		if (Random.Range (0, 10) == 0) {
@@ -190,7 +90,7 @@ public static class Factory
 		}
 		return enemy;
 	}
-
+	
 	public static Enemy NewBat ()
 	{
 		Enemy enemy = new Enemy ();
@@ -325,7 +225,7 @@ public static class Factory
 		enemy.Stats.AttackMaxDamage = 1;
 		return enemy;
 	}
-
-
-
+	
+	
+	
 }

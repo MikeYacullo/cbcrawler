@@ -67,7 +67,7 @@ public class ProjectileManager : MonoBehaviour
 							spriteShot.SetActive (false);
 							inactiveCount++;
 							if (gameManager.pc.Location.x == curX && gameManager.pc.Location.y == curY) {
-								gameManager.ApplyHit (enemiesShooting [i], gameManager.pc);		
+								gameManager.CombatCheck (enemiesShooting [i], gameManager.pc);		
 							} else {
 								audioManager.Play1Shot (audioManager.audioShotMiss);
 							}
@@ -181,7 +181,7 @@ public class ProjectileManager : MonoBehaviour
 					if (enemyIndex == -1) {
 						audioManager.Play1Shot (audioManager.audioShotMiss);
 					} else {
-						gameManager.ApplyHit (attacker, defender);
+						gameManager.CombatCheck (attacker, defender);
 					}
 					gameManager.EndTurnInProgress ();
 					break;

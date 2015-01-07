@@ -247,8 +247,10 @@ public class GameManager : MonoBehaviour
 				//chests
 				ItemChest chest = new ItemChest ();
 				chest.Location = map.GetRandomOpenArea ();
-				map.Cells [chest.Location.x, chest.Location.y].Passable = false;
-				AddItem (chest);
+				if (chest.Location != null) {
+					map.Cells [chest.Location.x, chest.Location.y].Passable = false;
+					AddItem (chest);
+				}
 				 
 				//webs
 				ItemWeb web;
@@ -256,20 +258,27 @@ public class GameManager : MonoBehaviour
 				dir = Map.Direction.Northeast;
 				web = new ItemWeb (dir);
 				web.Location = map.GetRandomCorner (dir);
-				AddItem (web);
+				if (web.Location != null) {
+					AddItem (web);
+				}
 				dir = Map.Direction.Northwest;
 				web = new ItemWeb (dir);
 				web.Location = map.GetRandomCorner (dir);
-				AddItem (web);
+				if (web.Location != null) {
+					AddItem (web);
+				}
 				dir = Map.Direction.Southeast;
 				web = new ItemWeb (dir);
 				web.Location = map.GetRandomCorner (dir);
-				AddItem (web);
+				if (web.Location != null) {
+					AddItem (web);
+				}
 				dir = Map.Direction.Southwest;
 				web = new ItemWeb (dir);
 				web.Location = map.GetRandomCorner (dir);
-				AddItem (web);
-				
+				if (web.Location != null) {
+					AddItem (web);
+				}
 				
 			}
 		}
@@ -382,11 +391,11 @@ public class GameManager : MonoBehaviour
 		} else {
 			enemies = new List<Enemy> ();
 			for (int i=0; i<ENEMIES_PER_LEVEL_COUNT; i++) {
-				Enemy enemy = Factory.GetEnemyForLevel (currentLevel);
+				Enemy enemy = EnemyFactory.GetEnemyForLevel (currentLevel);
 				enemy.Location = map.GetRandomCell (true);
 				map.Cells [enemy.Location.x, enemy.Location.y].Passable = false;
 				if (D100 () <= CHANCE_ENEMY_DROPS_LOOT) {
-					enemy.Loot = Factory.GetItemForLevel (currentLevel);
+					enemy.Loot = ItemFactory.GetItemForLevel (currentLevel);
 				}
 				AddEnemy (enemy);
 			}
@@ -730,7 +739,7 @@ public class GameManager : MonoBehaviour
 			if (pc.CurrentWeapon.IsRanged) {
 				int enemyIndex = EnemyAt (new Address (tileClicked.x, tileClicked.y));
 				if (cell.Visited && enemyIndex != -1) {
-					RangedCombatCheck (enemies [enemyIndex]);
+					PCShootAt (enemies [enemyIndex]);
 				}
 			}
 			if (cell.Visited && cell.Passable) {
@@ -852,7 +861,7 @@ public class GameManager : MonoBehaviour
 				ItemChest chest = (ItemChest)items [itemIndex];
 				if (chest.State == ItemChest.ChestState.Closed && D100 () < CHANCE_CHEST_IS_MIMIC) {
 					//create mimic
-					Enemy mimic = Factory.NewMimic ();
+					Enemy mimic = EnemyFactory.NewMimic ();
 					mimic.Location = chest.Location;
 					AddEnemy (mimic);
 					//remove chest
@@ -867,7 +876,7 @@ public class GameManager : MonoBehaviour
 					case ItemChest.ChestState.Open:
 						chest.SpriteName = "chestempty";
 						//generate loot
-						Item loot = Factory.GetItemForLevel (currentLevel);
+						Item loot = ItemFactory.GetItemForLevel (currentLevel);
 						loot.Location = new Address (pc.Location.x, pc.Location.y);
 						AddItem (loot);
 						GetLoot (pc.Location);
@@ -904,7 +913,7 @@ public class GameManager : MonoBehaviour
 	
 
 	
-	private void RangedCombatCheck (Actor defender)
+	private void PCShootAt (Actor defender)
 	{
 		//flip player if needed
 		if (defender.Location.x > pc.Location.x) {
@@ -918,7 +927,7 @@ public class GameManager : MonoBehaviour
 		StartCoroutine (projectileManager.MovePCShot (defender));
 	}
 	
-	private void CombatCheck (Actor attacker, Actor defender)
+	public void CombatCheck (Actor attacker, Actor defender)
 	{
 		//TODO make actual combat system
 		//combat cancels pc pathfinding (whether or not pc is attacker)
@@ -926,17 +935,14 @@ public class GameManager : MonoBehaviour
 		DisplayMessage (attacker.Name + " attacks " + defender.Name + "...");
 		if (UnityEngine.Random.Range (1, 10) > 4) {
 			ApplyHit (attacker, defender);
-			if (attacker is PlayerCharacter) {
-				
-			} else {
-				
-			}
 		} else {
 			//miss
 			DisplayMessage (attacker.Name + " misses!");
 			audioManager.Play1Shot (audioManager.audioWhiff);
 		}
 	}
+	
+	
 	
 	public void ApplyHit (Actor attacker, Actor defender)
 	{
