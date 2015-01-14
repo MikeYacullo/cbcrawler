@@ -116,6 +116,7 @@
      <Compile Include="Assets\Scripts\Stats.cs" />
      <Compile Include="Assets\Scripts\TitleScreenController.cs" />
      <Compile Include="Assets\Scripts\WeaponProperty.cs" />
+     <Compile Include="Assets\Scripts\trash.cs" />
      <None Include="Assets\Imports\Pro-D\Pro-D Logo\Pro-D Logo Text.txt" />
      <None Include="Assets\Imports\ConsolePro\Readme.txt" />
  <Reference Include="UnityEngine.UI">

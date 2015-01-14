@@ -13,6 +13,8 @@ public class GameManager : MonoBehaviour
 	public TileMapBehaviour tileMapTerrain;
 	public TileMapBehaviour tileMapFOW;
 
+	public GameObject actorVizPrefab;
+
 	private GameObject spritePC;
 	private Sprite[] texturesPC;
 	private Sprite[] texturesNPC;
@@ -405,12 +407,16 @@ public class GameManager : MonoBehaviour
 	void MakeEnemySprites ()
 	{
 		for (int i=0; i<enemies.Count; i++) {
+			AddEnemySprite (enemies [i]);
+			
+			/*
 			GameObject enemySprite = new GameObject ();
 			SpriteRenderer sr = enemySprite.AddComponent<SpriteRenderer> ();
 			sr.sprite = FindSpriteInTextures (enemies [i].SpriteName, texturesNPC);
 			MoveSpriteTo (enemySprite, enemies [i].Location.x, enemies [i].Location.y);
 			MoveGameObjectToZLevel (enemySprite, Z_ACTORS);
 			enemySprites.Add (enemySprite);	
+		*/
 		}
 	}
 	
@@ -422,12 +428,21 @@ public class GameManager : MonoBehaviour
 	
 	void AddEnemySprite (Enemy enemy)
 	{
+		GameObject actorViz = (GameObject)Instantiate (actorVizPrefab);
+		ActorVizBehavior b = actorViz.GetComponent<ActorVizBehavior> ();
+		b.sprite1 = FindSpriteInTextures (enemy.SpriteName, texturesNPC);
+		b.sprite2 = FindSpriteInTextures (enemy.SpriteName + "2", texturesNPC);
+		MoveSpriteTo (actorViz, enemy.Location.x, enemy.Location.y);
+		MoveGameObjectToZLevel (actorViz, Z_ACTORS);
+		enemySprites.Add (actorViz);
+		/*
 		GameObject enemySprite = new GameObject ();
 		SpriteRenderer sr = enemySprite.AddComponent<SpriteRenderer> ();
 		sr.sprite = FindSpriteInTextures (enemy.SpriteName, texturesNPC);
 		MoveSpriteTo (enemySprite, enemy.Location.x, enemy.Location.y);
 		MoveGameObjectToZLevel (enemySprite, Z_ACTORS);
 		enemySprites.Add (enemySprite);
+	*/
 	}
 	
 	void RemoveEnemy (int enemyIndex)
