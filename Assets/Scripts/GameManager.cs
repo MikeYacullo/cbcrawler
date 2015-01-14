@@ -435,14 +435,6 @@ public class GameManager : MonoBehaviour
 		MoveSpriteTo (actorViz, enemy.Location.x, enemy.Location.y);
 		MoveGameObjectToZLevel (actorViz, Z_ACTORS);
 		enemySprites.Add (actorViz);
-		/*
-		GameObject enemySprite = new GameObject ();
-		SpriteRenderer sr = enemySprite.AddComponent<SpriteRenderer> ();
-		sr.sprite = FindSpriteInTextures (enemy.SpriteName, texturesNPC);
-		MoveSpriteTo (enemySprite, enemy.Location.x, enemy.Location.y);
-		MoveGameObjectToZLevel (enemySprite, Z_ACTORS);
-		enemySprites.Add (enemySprite);
-	*/
 	}
 	
 	void RemoveEnemy (int enemyIndex)
@@ -494,7 +486,10 @@ public class GameManager : MonoBehaviour
 		string spriteName = className + sex;
 		
 		spritePC = GameObject.Find ("SpritePC");
-		spritePC.GetComponent<SpriteRenderer> ().sprite = FindSpriteInTextures (spriteName, texturesPC);
+		spritePC = (GameObject)Instantiate (actorVizPrefab);
+		ActorVizBehavior b = spritePC.GetComponent<ActorVizBehavior> ();
+		b.sprite1 = FindSpriteInTextures (spriteName, texturesPC);
+		b.sprite2 = FindSpriteInTextures (spriteName + "2", texturesPC);
 		MoveGameObjectToZLevel (spritePC, Z_ACTORS);
 	}
 	

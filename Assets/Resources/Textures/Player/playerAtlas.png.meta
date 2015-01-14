@@ -20,24 +20,24 @@ TextureImporter:
     21300030: barbarian_f
     21300032: monk_f
     21300034: paladin_f
-    21300036: playerAtlas_18
-    21300038: playerAtlas_19
-    21300040: playerAtlas_20
-    21300042: playerAtlas_21
-    21300044: playerAtlas_22
-    21300046: playerAtlas_23
-    21300048: playerAtlas_24
-    21300050: playerAtlas_25
-    21300052: playerAtlas_26
-    21300054: playerAtlas_27
-    21300056: playerAtlas_28
-    21300058: playerAtlas_29
-    21300060: playerAtlas_30
-    21300062: playerAtlas_31
-    21300064: playerAtlas_32
-    21300066: playerAtlas_33
-    21300068: playerAtlas_34
-    21300070: playerAtlas_35
+    21300036: fighter_m2
+    21300038: rogue_m2
+    21300040: hunter_m2
+    21300042: wizard_m2
+    21300044: cleric_m2
+    21300046: shaman_m2
+    21300048: barbarian_m2
+    21300050: monk_m2
+    21300052: paladin_m2
+    21300054: fighter_f2
+    21300056: rogue_f2
+    21300058: hunter_f2
+    21300060: wizard_f2
+    21300062: cleric_f2
+    21300064: shaman_f2
+    21300066: barbarian_f2
+    21300068: monk_f2
+    21300070: paladin_f2
     21300072: fighter_m
     21300074: rogue_m
     21300076: hunter_m
@@ -277,17 +277,17 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: playerAtlas_18
+    - name: fighter_m2
       rect:
         serializedVersion: 2
-        x: 0
+        x: 1
         y: 0
-        width: 24
-        height: 24
+        width: 22
+        height: 23
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: playerAtlas_19
+    - name: rogue_m2
       rect:
         serializedVersion: 2
         x: 24
@@ -297,17 +297,17 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: playerAtlas_20
+    - name: hunter_m2
       rect:
         serializedVersion: 2
         x: 48
         y: 0
         width: 24
-        height: 24
+        height: 23
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: playerAtlas_21
+    - name: wizard_m2
       rect:
         serializedVersion: 2
         x: 72
@@ -317,7 +317,7 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: playerAtlas_22
+    - name: cleric_m2
       rect:
         serializedVersion: 2
         x: 96
@@ -327,7 +327,7 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: playerAtlas_23
+    - name: shaman_m2
       rect:
         serializedVersion: 2
         x: 120
@@ -337,7 +337,7 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: playerAtlas_24
+    - name: barbarian_m2
       rect:
         serializedVersion: 2
         x: 144
@@ -347,7 +347,7 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: playerAtlas_25
+    - name: monk_m2
       rect:
         serializedVersion: 2
         x: 168
@@ -357,7 +357,7 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: playerAtlas_26
+    - name: paladin_m2
       rect:
         serializedVersion: 2
         x: 192
@@ -367,17 +367,17 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: playerAtlas_27
+    - name: fighter_f2
       rect:
         serializedVersion: 2
-        x: 216
+        x: 217
         y: 0
-        width: 24
-        height: 24
+        width: 22
+        height: 23
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: playerAtlas_28
+    - name: rogue_f2
       rect:
         serializedVersion: 2
         x: 240
@@ -387,17 +387,17 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: playerAtlas_29
+    - name: hunter_f2
       rect:
         serializedVersion: 2
         x: 264
         y: 0
         width: 24
-        height: 24
+        height: 23
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: playerAtlas_30
+    - name: wizard_f2
       rect:
         serializedVersion: 2
         x: 288
@@ -407,7 +407,7 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: playerAtlas_31
+    - name: cleric_f2
       rect:
         serializedVersion: 2
         x: 312
@@ -417,7 +417,7 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: playerAtlas_32
+    - name: shaman_f2
       rect:
         serializedVersion: 2
         x: 336
@@ -427,7 +427,7 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: playerAtlas_33
+    - name: barbarian_f2
       rect:
         serializedVersion: 2
         x: 360
@@ -437,7 +437,7 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: playerAtlas_34
+    - name: monk_f2
       rect:
         serializedVersion: 2
         x: 384
@@ -447,7 +447,7 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: playerAtlas_35
+    - name: paladin_f2
       rect:
         serializedVersion: 2
         x: 408
