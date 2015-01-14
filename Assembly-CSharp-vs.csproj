@@ -111,6 +111,7 @@
      <Compile Include="Assets\Scripts\ItemFactory.cs" />
      <Compile Include="Assets\Scripts\Map.cs" />
      <Compile Include="Assets\Scripts\Mutator.cs" />
+     <Compile Include="Assets\Scripts\OptionScrollerBehavior.cs" />
      <Compile Include="Assets\Scripts\PlayerCharacter.cs" />
      <Compile Include="Assets\Scripts\ProjectileManager.cs" />
      <Compile Include="Assets\Scripts\Stats.cs" />
