@@ -6,8 +6,9 @@ public class OptionScrollerBehavior : MonoBehaviour
 
 	public string[] options;
 	public UnityEngine.UI.Text txtSelected;
-	
-	int index;
+
+	public string text;
+	public int index;
 
 	// Use this for initialization
 	void Start ()
@@ -43,5 +44,6 @@ public class OptionScrollerBehavior : MonoBehaviour
 		}
 		index = newIndex;
 		txtSelected.text = options [index];
+		text = txtSelected.text;
 	}
 }
