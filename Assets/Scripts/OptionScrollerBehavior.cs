@@ -24,7 +24,6 @@ public class OptionScrollerBehavior : MonoBehaviour
 	
 	public void ClickLeft ()
 	{
-		Debug.Log ("ClickLeft");
 		SetOption (index - 1);
 	}
 	
@@ -35,7 +34,7 @@ public class OptionScrollerBehavior : MonoBehaviour
 	
 	void SetOption (int newIndex)
 	{
-		Debug.Log ("SetOption " + newIndex);
+		//Debug.Log ("SetOption " + newIndex);
 		if (newIndex > options.Length - 1) {
 			newIndex = 0;
 		}

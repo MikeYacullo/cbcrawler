@@ -432,6 +432,7 @@ public class GameManager : MonoBehaviour
 		ActorVizBehavior b = actorViz.GetComponent<ActorVizBehavior> ();
 		b.sprite1 = FindSpriteInTextures (enemy.SpriteName, texturesNPC);
 		b.sprite2 = FindSpriteInTextures (enemy.SpriteName + "2", texturesNPC);
+		b.isHealthBarVisible = false;
 		MoveSpriteTo (actorViz, enemy.Location.x, enemy.Location.y);
 		MoveGameObjectToZLevel (actorViz, Z_ACTORS);
 		enemySprites.Add (actorViz);
@@ -490,6 +491,7 @@ public class GameManager : MonoBehaviour
 		ActorVizBehavior b = spritePC.GetComponent<ActorVizBehavior> ();
 		b.sprite1 = FindSpriteInTextures (spriteName, texturesPC);
 		b.sprite2 = FindSpriteInTextures (spriteName + "2", texturesPC);
+		b.isHealthBarVisible = false;
 		MoveGameObjectToZLevel (spritePC, Z_ACTORS);
 	}
 	
@@ -960,17 +962,25 @@ public class GameManager : MonoBehaviour
 		damage = defender.TakeDamage (damage, attacker.CurrentWeapon.DmgType);
 		DisplayMessage (defender.Name + " is hit for " + damage + " " + attacker.CurrentWeapon.DmgType.ToString () + " damage!");
 		Debug.Log ("currentHealth:" + defender.Stats.CurrentHealth);
+		GameObject viz;
 		if (defender is PlayerCharacter) {
 			audioManager.Play1Shot (audioManager.audioHitPlayer);
+			viz = spritePC;
 			//stop pathfinding if happening
 			ClearPCPath ();
 		} else {
 			//it's an enemy
 			int enemyIndex = EnemyAt (new Address (defender.Location.x, defender.Location.y));
 			Enemy enemy = enemies [enemyIndex];
-			
+			viz = enemySprites [enemyIndex];
 			if (enemy.Stats.CurrentHealth > 0) {
 				audioManager.Play1Shot (audioManager.audioHitEnemy);
+				
+				ActorVizBehavior b = viz.GetComponent<ActorVizBehavior> ();
+				b.isHealthBarVisible = true;
+				float newHealth = (float)defender.Stats.CurrentHealth / (float)defender.Stats.MaxHealth;
+				Debug.Log ("new health " + newHealth);
+				b.SetHealthVisual (newHealth);
 			} else {
 				audioManager.Play1Shot (audioManager.audioDieEnemy);
 				//drop loot
@@ -985,6 +995,7 @@ public class GameManager : MonoBehaviour
 				RemoveEnemy (enemyIndex);	
 			}
 		}
+		
 	}
 	
 	private void DisplayMessage (string messageText)
