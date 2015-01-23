@@ -9,7 +9,8 @@ public class ActorVizBehavior : MonoBehaviour
 	public bool isHealthBarVisible = true;
 	public Sprite sprite1, sprite2;
 	
-	public Image healthBar;
+	public Canvas hbCanvas;
+	public Image[] healthBarImages;
 	
 	SpriteRenderer renderer;
 	
@@ -23,24 +24,25 @@ public class ActorVizBehavior : MonoBehaviour
 		renderer.sprite = sprite1;
 		startTime = Time.time;
 		
-		healthBar = GetComponentInChildren<Image> ();
+		hbCanvas = GetComponentInChildren<Canvas> ();
+		healthBarImages = GetComponentsInChildren<Image> ();
 	}
 	
 	// Health between [0.0f,1.0f] == (currentHealth / totalHealth)
 	public void SetHealthVisual (float healthNormalized)
 	{
-		healthBar.transform.localScale = new Vector3 (healthNormalized,
-		                                             healthBar.transform.localScale.y,
-		                                             healthBar.transform.localScale.z);
+		foreach (Image healthBar in healthBarImages) {
+			healthBar.transform.localScale = new Vector3 (healthNormalized, healthBar.transform.localScale.y, healthBar.transform.localScale.z);
+		}
 	}
 	
 	// Update is called once per frame
 	void Update ()
 	{
 		if (isHealthBarVisible) {
-			healthBar.enabled = true;
+			hbCanvas.enabled = true;
 		} else {
-			healthBar.enabled = false;
+			hbCanvas.enabled = false;
 		}
 		if (isAnimated) {
 			if (Time.time > startTime + timePerFrame) {
