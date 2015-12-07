@@ -7,8 +7,6 @@ Project("{8CE22058-D59A-7BB4-B917-59A76EE3030E}") = "cbcrawler", "Assembly-CShar
 EndProject
 Project("{8CE22058-D59A-7BB4-B917-59A76EE3030E}") = "cbcrawler", "Assembly-CSharp-Editor.csproj", "{9765A7CD-36B0-E476-8BDB-50CE0DDE7F13}"
 EndProject
-Project("{8CE22058-D59A-7BB4-B917-59A76EE3030E}") = "cbcrawler", "Assembly-UnityScript-firstpass.unityproj", "{C2E5CA66-80A5-F938-20DC-B646A40CBC94}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,15 +25,11 @@ Global
 		{9765A7CD-36B0-E476-8BDB-50CE0DDE7F13}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9765A7CD-36B0-E476-8BDB-50CE0DDE7F13}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9765A7CD-36B0-E476-8BDB-50CE0DDE7F13}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C2E5CA66-80A5-F938-20DC-B646A40CBC94}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C2E5CA66-80A5-F938-20DC-B646A40CBC94}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C2E5CA66-80A5-F938-20DC-B646A40CBC94}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C2E5CA66-80A5-F938-20DC-B646A40CBC94}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
-																																																																																																																																																							GlobalSection(MonoDevelopProperties) = preSolution
+																																																																																																																																																												GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = Assembly-CSharp.csproj
 		Policies = $0
 		$0.TextStylePolicy = $1

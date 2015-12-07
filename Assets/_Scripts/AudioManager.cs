@@ -21,7 +21,7 @@ public class AudioManager : MonoBehaviour
 
 	public void Play1Shot (AudioClip clip)
 	{
-		audio.PlayOneShot (clip, FXVOLUME);
+		GetComponent<AudioSource>().PlayOneShot (clip, FXVOLUME);
 	}
 	
 	// Use this for initialization
